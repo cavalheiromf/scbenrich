@@ -11,6 +11,7 @@ import shutil
 import pandas as pd
 
 from benchmarks import expanded
+from benchmarks.checkpoints import batch_path, read_checkpoint
 
 
 def _scenario(config, directory):
@@ -18,16 +19,42 @@ def _scenario(config, directory):
     return str(directory)
 
 
+def _identity(config):
+    root = Path(expanded.__file__).resolve().parents[1]
+    sources = [Path(expanded.__file__)] + list((root / 'scbenrich').rglob('*.py'))
+    return dict(config=config,
+                source_hashes={str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(sources)},
+                versions={name: version(name) for name in ('numpy', 'pandas', 'scipy')})
+
+
+def _runner_identity():
+    paths = [Path(__file__), Path(__file__).with_name('slurm.py'),
+             Path(__file__).with_name('checkpoints.py')]
+    return {str(p.resolve()): hashlib.sha256(p.read_bytes()).hexdigest() for p in paths}
+
+
+def validate_prepared(config, out_dir, scenario=None):
+    """Read-only validation in each task; preparation must precede submission."""
+    out = Path(out_dir)
+    try:
+        if json.loads((out / 'config.json').read_text()) != _identity(config):
+            raise ValueError('configuration or manifest differs from existing run')
+        if json.loads((out / 'runner_metadata.json').read_text()) != _runner_identity():
+            raise ValueError('runner source differs from prepared manifest')
+        if scenario is not None:
+            expected = _identity(dict(config, scenarios=[scenario]))
+            if json.loads((out / 'shards' / scenario / 'config.json').read_text()) != expected:
+                raise ValueError('incompatible shard manifest: ' + scenario)
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError('missing or invalid manifest; run prepare first') from error
+
+
 def prepare(config, out_dir):
     scenarios = config['scenarios']
     if not scenarios or len(set(scenarios)) != len(scenarios) or set(scenarios) - set(expanded.SCENARIOS):
         raise ValueError('invalid scenarios')
     out = Path(out_dir)
-    root = Path(expanded.__file__).resolve().parents[1]
-    sources = [Path(expanded.__file__)] + list((root / 'scbenrich').rglob('*.py'))
-    identity = dict(config=config,
-                    source_hashes={str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(sources)},
-                    versions={name: version(name) for name in ('numpy', 'pandas', 'scipy')})
+    identity = _identity(config)
     manifest = out / 'config.json'
     if manifest.exists():
         if json.loads(manifest.read_text()) != identity:
@@ -37,6 +64,14 @@ def prepare(config, out_dir):
         if any(out.iterdir()):
             raise ValueError('output directory contains unidentified results')
         manifest.write_text(json.dumps(identity, indent=2, sort_keys=True) + '\n')
+
+    runner_manifest = out / 'runner_metadata.json'
+    runner = _runner_identity()
+    if runner_manifest.exists():
+        if json.loads(runner_manifest.read_text()) != runner:
+            raise ValueError('runner source differs from prepared manifest')
+    else:
+        runner_manifest.write_text(json.dumps(runner, indent=2, sort_keys=True) + '\n')
 
     jobs = []
     for scenario in scenarios:
@@ -50,10 +85,17 @@ def prepare(config, out_dir):
                 raise ValueError('incompatible shard: ' + scenario)
         else:
             shard_manifest.write_text(json.dumps(shard_identity, indent=2, sort_keys=True) + '\n')
-        for checkpoint in out.glob(f'batch_{scenario}_*.json'):
-            target = directory / checkpoint.name
-            if not target.exists():
-                shutil.copy2(checkpoint, target)
+        for effect in config['odds_ratios']:
+            for start in range(0, config['replicates'], config['batch_size']):
+                checkpoint = batch_path(out, scenario, effect, start)
+                if checkpoint.exists():
+                    payload = read_checkpoint(checkpoint, config, scenario, effect, start)
+                    target = directory / checkpoint.name
+                    if target.exists():
+                        if read_checkpoint(target, config, scenario, effect, start) != payload:
+                            raise ValueError('conflicting checkpoint: ' + target.name)
+                    else:
+                        shutil.copy2(checkpoint, target)
         jobs.append((subset, directory))
 
     return jobs
@@ -64,13 +106,18 @@ def collect(config, out_dir):
     jobs = prepare(config, out_dir)
     records, terms = [], []
     for _, directory in jobs:
-        expected = len(config['odds_ratios']) * ((config['replicates'] + config['batch_size'] - 1) // config['batch_size'])
-        if len(list(directory.glob('batch_*.json'))) != expected:
-            raise ValueError('incomplete scenario: ' + directory.name)
-        for checkpoint in sorted(directory.glob('batch_*.json')):
-            payload = json.loads(checkpoint.read_text())
+        expected_paths = {batch_path(directory, directory.name, effect, start): (effect, start)
+                          for effect in config['odds_ratios']
+                          for start in range(0, config['replicates'], config['batch_size'])}
+        if set(directory.glob('batch_*.json')) != set(expected_paths):
+            raise ValueError('incomplete or unexpected checkpoint set: ' + directory.name)
+        for checkpoint, (effect, start) in sorted(expected_paths.items()):
+            payload = read_checkpoint(checkpoint, config, directory.name, effect, start)
             records.extend(payload['replicates'])
             terms.extend(payload['terms'])
+    # Copy checkpoints only after every scenario has passed coverage validation.
+    for _, directory in jobs:
+        for checkpoint in directory.glob('batch_*.json'):
             target = out / checkpoint.name
             if not target.exists():
                 temporary = target.with_suffix('.tmp')

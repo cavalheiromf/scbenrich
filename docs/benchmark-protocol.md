@@ -1,86 +1,104 @@
-# Benchmark: hipóteses, métricas e interpretação
+# Benchmark: hypotheses, metrics and interpretation
 
-## Verdade de referência — esquema 2
+## Reference truth — schema 2
 
-O gerador define a verdade pela distribuição populacional, sem consultar os p-valores observados. `term_truth.tsv` exporta `marginal_null` e `conditional_null` para cada termo e cenário. O alvo condicionado é o tamanho contínuo; o teste usa bins e pode apresentar confundimento residual dentro deles.
+The generator defines truth from the population distribution, without consulting observed p-values. `term_truth.tsv` exports `marginal_null` and `conditional_null` for each term and scenario. The conditional target is continuous size; the test uses bins and may retain residual confounding within them.
 
-| Cenário | Termos `null_*`: nulo marginal | Termos `null_*`: nulo condicionado | Termo `effect` |
+| Scenario | `null_*` terms: marginal null | `null_*` terms: conditional null | `effect` term |
 |---|---|---|---|
-| simple_null | verdadeiro | verdadeiro | ausente |
-| confounded_null | falso | verdadeiro | ausente |
-| simple_positive | verdadeiro | verdadeiro | alternativa marginal e condicionada |
-| confounded_positive | falso | verdadeiro | alternativa marginal e condicionada |
+| simple_null | true | true | absent |
+| confounded_null | false | true | absent |
+| simple_positive | true | true | marginal and conditional alternative |
+| confounded_positive | false | true | marginal and conditional alternative |
 
-O nome histórico `confounded_null` significa nulo condicionado. Seleção e anotação aumentam com o tamanho, gerando covariância marginal positiva. Uma descoberta de Fisher nesses termos pode representar associação marginal real.
+The historical name `confounded_null` refers to a conditional null. Selection and annotation increase with size, producing positive marginal covariance. A Fisher discovery for these terms may represent a real marginal association.
 
-## Métricas
+## Metrics
 
-- `target`: hipótese marginal para Fisher; condicionada ao tamanho para estratificação.
-- `false_discoveries`: descobertas de termos nulos para o alvo do método.
-- `n_null_terms`: denominador conceitual que identifica cenários sem hipóteses nulas para aquele alvo. FDR zero quando não há nulos é trivial e não demonstra calibração.
-- `conditional_target_mismatch`: quantidade de termos condicionadamente nulos descobertos por Fisher nos cenários confundidos. É uma divergência de objetivo, não erro tipo I marginal.
-- `probability_any_false_discovery`: frequência de réplicas com pelo menos uma falsa descoberta contra o alvo correspondente. Coincide com FDR apenas sob nulo global.
-- `empirical_fdr`: média da proporção de falsas descobertas por réplica, considerando zero quando não há descobertas.
-- `power`: frequência de detecção do termo `effect`, quando presente. Comparação direta de poder entre métodos exige alvos coincidentes; nos cenários confundidos, ler como detecção do termo predefinido para hipóteses diferentes.
-- `any_false_discovery_ci_low/high`: IC binomial para o evento de ao menos uma falsa descoberta; não é IC do FDR nos cenários mistos.
-- `ci_coverage`: cobertura da OR marginal conhecida apenas no cenário simple_positive, sem seleção prévia por significância.
+- `target`: marginal hypothesis for Fisher; size-conditional hypothesis for stratification.
+- `false_discoveries`: discoveries of terms that are null for the method's target.
+- `n_null_terms`: conceptual denominator identifying scenarios with no null hypotheses for that target. Zero FDR when there are no nulls is trivial and does not demonstrate calibration.
+- `conditional_target_mismatch`: number of conditionally null terms discovered by Fisher in confounded scenarios. This is a difference in targets, not marginal type I error.
+- `probability_any_false_discovery`: frequency of replicates with at least one false discovery against the corresponding target. It equals FDR only under the global null.
+- `empirical_fdr`: mean false discovery proportion per replicate, assigning zero when there are no discoveries.
+- `power`: detection frequency for the `effect` term, when present. Direct power comparisons between methods require matching targets; in confounded scenarios, interpret this as detection of the predefined term under different hypotheses.
+- `any_false_discovery_ci_low/high`: binomial confidence interval for the event of at least one false discovery; it is not an FDR interval in mixtures of null and alternative terms.
+- `ci_coverage`: coverage of the known marginal OR only in the simple_positive scenario, without prior selection by significance.
 
-## Protocolo do benchmark atual
+## Current benchmark protocol
 
-Configuração padrão: seed 42, 100 réplicas, 999 permutações, bins 2/4/8, 120 famílias, oito termos `null_*`, log-OR do efeito 1.5. Os cenários são avaliados sobre a mesma matriz de termos para os dois métodos. BH e limiar estrito de 0.05 são aplicados separadamente. O binning não é escolhido retrospectivamente pelo melhor resultado.
+Default configuration: seed 42, 100 replicates, 999 permutations, bins 2/4/8, 120 families, eight `null_*` terms and an effect log-OR of 1.5. Scenarios are evaluated using the same term matrix for both methods. BH and a strict 0.05 threshold are applied separately. Binning is not chosen retrospectively based on the best result.
 
-Esse experimento não modela ainda três covariáveis, anotações GO incompletas ou estrutura filogenética. Também não fornece IC de FDR em cenário misto. Esses componentes pertencem à validação ampliada. A resolução e os intervalos de incerteza devem acompanhar qualquer conclusão.
+This experiment does not yet model three covariates, incomplete GO annotations or phylogenetic structure. It also does not provide FDR confidence intervals in a mixture scenario. These components belong to expanded validation. Resolution and uncertainty intervals must accompany any conclusion.
 
-## Piloto histórico
+## Historical pilot
 
-`benchmarks/pilot` é preservado sem alteração dos arquivos numéricos. Seus rótulos anteriores mediam descobertas contra o nulo condicionado para ambos os métodos. Nos cenários confundidos, as colunas de falsas descobertas de Fisher não podem ser interpretadas como erros de seu teste marginal. Ver `benchmarks/pilot/INTERPRETATION.md`.
+`benchmarks/pilot` is preserved without changes to its numerical files. Its previous labels assessed discoveries against the conditional null for both methods. In confounded scenarios, Fisher's false-discovery columns cannot be interpreted as errors of its marginal test. See `benchmarks/pilot/INTERPRETATION.md`.
 
-## Validação ampliada
+## Expanded validation
 
-`benchmarks.expanded` acrescenta sete cenários e três covariáveis. Nos cenários discretos, valores são balanceados para que bins de quantis separem exatamente cada covariável binária. No cenário contínuo, os bins aproximam o condicionamento. `missing_size` aplica perda de anotação dependente do tamanho; `dependent` cria dois filhos e um ancestral com união dos filhos; `sparse` usa seleção quase determinística; `derived_degree` calcula o grau da própria matriz. `unconfounded` oferece OR marginal conhecida para medir cobertura.
+`benchmarks.expanded` adds seven scenarios and three covariates. In discrete scenarios, values are balanced so that quantile bins separate each binary covariate exactly. In the continuous scenario, bins approximate conditioning. `missing_size` applies size-dependent annotation loss; `dependent` creates two children and an ancestor defined by their union; `sparse` uses nearly deterministic selection; `derived_degree` computes degree from the matrix itself. `unconfounded` provides a known marginal OR for measuring coverage.
 
-A verdade condicionada de `derived_degree` é desconhecida: condicionar no grau calculado do desfecho pode mudar a hipótese. A verdade marginal de `missing_size` também é desconhecida, pois perda diferencial pode reverter ou cancelar a associação. Essas células não recebem FDR. OR=1 representa nulo; OR>1 representa efeito positivo. A taxa de detecção de efeito não deve ser comparada entre métodos com alvos diferentes. FDR zero em cenários sem termos nulos marginais é trivial.
+The conditional truth for `derived_degree` is unknown: conditioning on a degree calculated from the outcome can change the hypothesis. The marginal truth for `missing_size` is also unknown, because differential missingness can reverse or cancel the association. FDR is not assigned to these cells. OR=1 represents the null; OR>1 represents a positive effect. Effect detection rates should not be compared between methods with different targets. Zero FDR in scenarios without marginally null terms is trivial.
 
-Execução curta para verificar funcionamento:
+Short run to verify functionality:
 
 ```bash
 python -m benchmarks.expanded --config benchmarks/configs/smoke.json --out-dir benchmark_results/smoke
 python -m benchmarks.report benchmark_results/smoke --plot
 ```
 
-Para a configuração ampliada:
+For the expanded configuration:
 
 ```bash
 python -m benchmarks.expanded --config benchmarks/configs/validation.json --out-dir benchmark_results/validation
 ```
 
-A configuração ampliada define 1.000 réplicas, 9.999 permutações, 240 famílias, bins 2/4/8 e OR 1/2/4. Essa configuração é computacionalmente maior e não foi executada nesta entrega. O ensaio curto executado usa cinco réplicas, 99 permutações, 120 famílias, bins 2/4 e OR 1/4; demonstra execução, não calibração.
+The expanded configuration specifies 1,000 replicates, 9,999 permutations, 240 families, bins 2/4/8 and OR 1/2/4. This configuration is computationally larger and had not been executed at this delivery stage. The short run used five replicates, 99 permutations, 120 families, bins 2/4 and OR 1/4; it demonstrates execution, not calibration.
 
-Cada lote é gravado atomicamente. Repetir o comando reutiliza lotes concluídos se configuração, versões e hashes do código coincidirem. Mudanças exigem outra pasta. `SeedSequence` recebe cenário, efeito, réplica, propósito e bins: reordenar cenários não muda os dados. Em retomada, o lote incompleto é refeito de forma determinística. IDs de cenário são estáveis e não devem ser renumerados.
+Each batch is written atomically. Repeating the command reuses completed batches if the configuration, versions and code hashes match. Changes require another directory. `SeedSequence` receives scenario, effect, replicate, purpose and bins: reordering scenarios does not change the data. On resumption, an incomplete batch is rerun deterministically. Scenario IDs are stable and must not be renumbered.
 
-`terms.tsv` preserva p-valores, ajustes, verdade de referência, suporte e excedências. `replicates.tsv` preserva descobertas, proporção de falsas descobertas, detecção do efeito, cobertura e suporte. `summary.tsv` calcula FDR com bootstrap de réplicas e intervalos binomiais para detecção/cobertura. Células com menos de duas réplicas não recebem intervalos. Intervalos bootstrap degenerados em zero com poucas réplicas não demonstram ausência de erro; o ensaio curto não serve como validação nominal.
+`terms.tsv` preserves p-values, adjustments, reference truth, support and exceedances. `replicates.tsv` preserves discoveries, false discovery proportions, effect detection, coverage and support. `summary.tsv` calculates FDR using replicate bootstrap intervals and binomial intervals for detection/coverage. Cells with fewer than two replicates receive no intervals. Bootstrap intervals that collapse to zero with few replicates do not demonstrate the absence of error; the short run is not suitable for nominal calibration validation.
 
-`calibration.tsv` registra, para cada limiar, a média entre réplicas das frações de rejeição entre termos nulos conhecidos. As figuras SVG são curvas de calibração descritivas, sem intervalos simultâneos. Discreção dos p-valores pode produzir conservadorismo. Não há ainda bootstrap pareado das diferenças entre bins, incerteza simultânea das curvas, simulação filogenética nem avaliação de políticas alternativas de evidência IEA.
+For each threshold, `calibration.tsv` records the mean across replicates of the rejection fractions among known null terms. SVG figures are descriptive calibration curves without simultaneous intervals. Discrete p-values may produce conservatism. Paired bootstrap intervals for differences between bins, simultaneous curve uncertainty, phylogenetic simulation and evaluation of alternative IEA evidence policies are not yet available.
 
-## Comparadores externos executados
+## Executed external comparisons
 
-O runner `benchmarks.comparators.run` harmoniza entradas familiares e audita contagens antes de comparar p-valores. GOATOOLS bilateral é comparado com Fisher bilateral; topGO classic e clusterProfiler são comparados com Fisher unilateral. topGO elim é identificado como algoritmo diferente. As versões, omissões e ajustes BH comuns estão documentados em `benchmarks/comparators/README.md`. A execução com exemplos verifica integração; ainda não constitui benchmark de calibração dos comparadores ou estudo biológico real.
+The `benchmarks.comparators.run` runner harmonizes family-level inputs and audits counts before comparing p-values. Two-sided GOATOOLS is compared with two-sided Fisher; topGO classic and clusterProfiler are compared with one-sided Fisher. topGO elim is identified as a different algorithm. Versions, omissions and common BH adjustments are documented in `benchmarks/comparators/README.md`. The example run verifies integration; it does not yet constitute a comparator calibration benchmark or a real biological study.
 
-## Custo medido da execução completa
+## Measured cost of the full run
 
-Uma medição de 21 análises com 9.999 permutações estimou aproximadamente 35 horas de execução sequencial após a otimização dos estratos determinísticos (73 horas antes) para as 63.000 análises da configuração completa. A extrapolação usa apenas OR=1 e uma réplica; não inclui todo o custo de geração, escrita e agregação. Consulte [tempos, suporte e reprodução](../benchmarks/timing/README.md). Os resultados da execução completa subsequente constam na seção abaixo.
+A measurement of 21 analyses with 9,999 permutations estimated approximately 35 hours of sequential execution after optimizing deterministic strata (73 hours before) for the full configuration of 63,000 analyses. The extrapolation uses only OR=1 and one replicate; it excludes part of the cost of generation, writing and aggregation. See [timings, support and reproduction](../benchmarks/timing/README.md). Results from the subsequent full run are described below.
 
-## Execução completa concluída em 2026-10-22
+## Full run completed on 2026-10-22
 
-A validação completa foi executada com a configuração estatística de `benchmarks/configs/validation_checkpointed.json` (1.000 réplicas, 9.999 permutações, 240 famílias, bins 2/4/8, Odds Ratios 1/2/4 e sete cenários).
+Full validation used the statistical configuration in `benchmarks/configs/validation_checkpointed.json` (1,000 replicates, 9,999 permutations, 240 families, bins 2/4/8, odds ratios 1/2/4 and seven scenarios).
 
-Para viabilizar a execução dentro dos recursos do cluster Slurm:
-- As análises foram distribuídas em um job array de 84 tarefas simultâneas (7 cenários × 3 Odds Ratios × 4 blocos de réplicas de 250 réplicas / 50 lotes).
-- O tempo total de relógio (*wall-clock*) foi de aproximadamente **39 minutos** (reduzindo das ~35 horas da estimativa sequencial).
-- Foram gerados e agregados com sucesso os **4.200 lotes** (`batch_*.json`), totalizando **63.000 análises**.
+To fit the execution within the Slurm cluster resources:
 
-Os arquivos finais estão consolidados em `benchmark_results/validation/` (ignorados pelo Git):
-- `summary.tsv`: resumo das 126 combinações com estimativas de FDR empírico, poder, cobertura e intervalos bootstrap/binomiais.
-- `calibration.tsv`: taxas de rejeição observadas sob o nulo em limiares nominais para avaliação de calibração.
-- `calibration_*.svg`: figuras vetoriais descritivas das curvas de calibração por cenário.
-- `replicates.tsv` e `terms.tsv`: dados brutos por réplica e por termo.
+- Analyses were distributed across a job array of 84 simultaneous tasks (7 scenarios × 3 odds ratios × 4 replicate chunks of 250 replicates / 50 batches).
+- Total wall-clock time was approximately **39 minutes**, compared with the sequential estimate of ~35 hours.
+- All **4,200 batches** (`batch_*.json`) were generated and aggregated successfully, totaling **63,000 analyses**.
+
+Final files are consolidated in `benchmark_results/validation/` (ignored by Git):
+
+- `summary.tsv`: summary of 126 combinations with empirical FDR, power, coverage and bootstrap/binomial intervals.
+- `calibration.tsv`: observed null rejection rates at nominal thresholds for calibration assessment.
+- `calibration_*.svg`: descriptive vector calibration curves by scenario.
+- `replicates.tsv` and `terms.tsv`: raw data by replicate and term.
+
+## Slurm resumption contracts
+
+Run `prepare` once before submission. Each task checks the configuration, NumPy/pandas/SciPy versions, statistical code hashes and scenario manifest without modifying the manifests. `runner_metadata.json` additionally records hashes of the orchestration modules (`parallel.py`, `slurm.py` and `checkpoints.py`). Changes to these files after preparation prevent execution and collection; use a new directory for changed code.
+
+```bash
+.venv/bin/python -m benchmarks.slurm prepare --config benchmarks/configs/validation_checkpointed.json --out-dir benchmark_results/validation
+```
+
+Tasks partition global batch indices, preserving their names and compatibility with sequential checkpoints. When there are more tasks than batches, some tasks are empty. The default array contains 84 tasks for seven scenarios, three OR values and four chunks per effect; adjust the array range if this configuration changes.
+
+Resumption and collection reject unreadable checkpoints, missing or duplicate rows and mismatched permutation counts. Collection requires exact batch names and complete coverage of scenario, OR, replicate, bins, method and term before consolidating results. These checks verify structure and declared provenance; they cannot retrospectively reconstruct the origin of results produced before manifest validation was implemented.
+
+## Audit of historical results
+
+All 4,200 batches and four consolidated tables were checked, and 21 analyses were repeated without numerical discrepancies. Historical provenance remains partial, and the sparse scenario with two bins had an empirical FDR of 26.5% against the generator's null. Consult the [audit report](validation-audit/README.md) before interpreting or reusing the results.

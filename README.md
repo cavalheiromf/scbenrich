@@ -2,84 +2,50 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![Tests: Passing](https://img.shields.io/badge/tests-52%20passed-brightgreen.svg)](#installation)
 
-**SCB-Enrich** is a Python library and command-line pipeline designed for robust functional overrepresentation analysis of **gene families (orthogroups)**. 
+**SCB-Enrich** is a Python library and command-line pipeline for exploratory functional overrepresentation analysis of **gene families (orthogroups)**. It reports marginal family-level associations and stratified permutation results as independent statistical decisions.
 
-By modeling gene families rather than individual genes and evaluating candidates against a **stratified covariate-balanced permutation null model**, SCB-Enrich eliminates the false discoveries caused by **paralog pseudoreplication** and **extrinsic family-size confounding** in comparative genomics and macroevolutionary studies.
+Each family contributes at most once per functional term. The permutation test preserves the observed number of selected families within each joint covariate bin. It does not exactly condition on continuous covariate values, and residual confounding can remain within bins. **The available validation does not establish general FDR control at 5%.**
 
----
+## Biological Motivation and Scope
 
-## The Problem: Why Conventional Gene-Level Tools Fail for Gene Families
+A family-level analysis matches questions about family expansion and avoids counting multiple annotated paralogs as separate family observations. It does not establish independence between families or account for shared phylogenetic history.
 
-Standard functional enrichment workflows—such as `clusterProfiler::enricher`, `topGO`, or `GOATOOLS`—were designed for differential expression, where single genes serve as independent observations. When applied to macroevolutionary gene-family expansions (e.g., from CAFE or OrthoFinder), these tools suffer from three fundamental biases:
+Family size, reference homolog count and annotation density can influence annotation opportunity. A large family need not be densely annotated: a poorly characterized expansion can contain many members and few known functions. These quantities should be examined separately when selecting covariates.
 
-1. **Paralog Pseudoreplication**: Lineage-specific expansions typically arise via tandem or proximal duplications, yielding dozens of co-annotated paralogous genes derived from a single evolutionary event. Treating each paralog as an independent draw severely violates statistical independence, artificially inflating test statistics (`p < 1e-50` to `1e-180`) and generating hundreds of spurious functional discoveries.
-2. **Extrinsic Family-Size Confounding**: Expanded families are systematically larger and more thoroughly annotated across reference species. Standard hypergeometric or Fisher tests confound genuine biological specialization with overall family size and annotation density.
-3. **The Inadequacy of Topological Graph Decorrelation (`topGO elim`)**: While graph-decorrelation algorithms (e.g., `topGO elim`) resolve vertical parent–child redundancies within the Gene Ontology directed acyclic graph (DAG), they operate entirely along ontology edges. They remain blind to horizontal paralog clusters and family-size disparities, continuing to treat dozens of tandem duplicates as independent events.
+GO hierarchy reduction and covariate adjustment address different aspects of an analysis. The comparator adapters use harmonized family-level inputs to check baseline calculations. Their example results do not establish superiority over other tools or show that additional discoveries from a gene-level analysis are false.
 
-### The SCB-Enrich Solution
+## Analysis Workflow
 
-SCB-Enrich resolves these limitations through a principled two-tier statistical framework:
+1. Define the eligible family universe, foreground and binary family-to-term annotations.
+2. Compute marginal Fisher tests, marginal odds ratios and BH-adjusted p-values.
+3. Resample foreground families within joint quantile bins, preserving stratum counts, and apply BH to the stratified p-values.
+4. Report independent significance decisions, randomization support and descriptive covariate balance diagnostics.
+5. Optionally produce GO redundancy summaries with removal-to-representative audit maps.
 
-- **Family as the Unit of Analysis**: Orthogroups serve as the primary, independent sampling units. Paralogous genes within a family contribute exactly once per functional term.
-- **Stratified Permutation Null Model**: To distinguish genuine functional selection from family-size artifacts, candidate terms are evaluated against 10,000 stratified permutations that preserve the exact joint distribution of key covariates:
-  - **Family Size** (total gene count across the comparative clade)
-  - **Reference Homolog Count** (mapped homologs in a model species such as *Arabidopsis thaliana*)
-  - **Annotation Degree** (total number of distinct functional terms assigned)
-- **Covariate Balance Auditing (SMD)**: For each category, balance between foreground and background families is validated using Standardized Mean Differences, requiring `|SMD| < 0.10`.
+Permutation inference requires exchangeability within the selected strata. Coarse bins can leave important covariate differences, while finer bins can leave few possible exchanges and reduce power. Binning should be specified before examining significance results; a lower rejection rate alone does not establish a better configuration.
 
-```
-                        Input Data (OrthoFinder / CAFE / GFF3)
-                                          │
-                                          ▼
-                      ┌───────────────────────────────────────┐
-                      │    build_master_table() / CLI Input   │
-                      │  - Gene counts & family size          │
-                      │  - Reference homologs (Ath count)     │
-                      │  - GFF3 gene architecture covariates  │
-                      │  - Functional annotation degree       │
-                      └───────────────────┬───────────────────┘
-                                          │
-                                          ▼
-                      ┌───────────────────────────────────────┐
-                      │    Step 1: Marginal Family ORA        │
-                      │    Fisher's exact test & Odds Ratio   │
-                      │    Benjamini-Hochberg FDR (q_local)   │
-                      └───────────────────┬───────────────────┘
-                                          │
-                                          ▼
-                      ┌───────────────────────────────────────┐
-                      │    Step 2: Stratified Null Model      │
-                      │    10,000 resamples matched across    │
-                      │    joint size & annotation strata     │
-                      │    Empirical p_strat calculation      │
-                      └───────────────────┬───────────────────┘
-                                          │
-                                          ▼
-                      ┌───────────────────────────────────────┐
-                      │    Step 3: Balance Audit & Reduction  │
-                      │    Balance check: |SMD| < 0.10        │
-                      │    DAG ancestor redundancy reduction  │
-                      │    Four-tier evidence classification  │
-                      └───────────────────────────────────────┘
-```
+Covariate choice also changes the target hypothesis. In particular, annotation degree calculated from the tested term matrix is outcome-derived. The benchmark treats that setting separately and leaves its conditional truth unknown.
 
----
+## Validation Results and Limitations
 
-## Empirical Benchmark Comparison
+The expanded historical run contains 1,000 replicates, 9,999 permutations per analysis and seven scenarios. An audit checked all 4,200 checkpoints, reconstructed the four consolidated tables and reproduced 21 sampled analyses without numerical discrepancies. Historical orchestration hashes were not recorded, so provenance remains partial. See the [audit report and evidence](docs/validation-audit/README.md).
 
-Evaluating lineage-specific expansions in *Vellozia peripherica* (217 expanded families, 2,344 genes, 125 families annotated with `GO_BP`) against all modeled monocot families demonstrates how SCB-Enrich prevents false discoveries:
+Selected results for the stratified method under OR=1 are:
 
-| Tool / Framework | Sampling Unit | Graph Treatment | Covariate Control (Size / Degree) | Significant GO_BP Terms | Lowest Observed p-value |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **`clusterProfiler::enricher`** | Gene | None | None | **329** (`q < 0.05`) | `4.14e-188` |
-| **`topGO classic` (Fisher)** | Gene | None | None | **380** (`p < 0.05`) | `< 1e-30` |
-| **`topGO elim` (Fisher)** | Gene | DAG Decorrelation | None | **143** (`p < 0.05`) | `< 1e-30` |
-| **Marginal Family ORA** | Family | None | None | **28** (`q < 0.05`) | `1.07e-4` |
-| **`scbenrich` (SCB-Enrich)** | Family | DAG Reduction | **Stratified Permutations + \|SMD\| < 0.10** | **3** (2 Robust + 1 Suggestive) | `0.0013` (`q_local`) / `0.017` (`p_strat`) |
+| Scenario | Bins per covariate | Empirical FDR | 95% bootstrap interval | Mean fraction of informative strata |
+| :--- | ---: | ---: | ---: | ---: |
+| Exact | 2 | 3.9% | 2.8–5.1% | 99.7% |
+| Continuous | 2 | 6.0% | 4.6–7.5% | 100.0% |
+| Sparse | 2 | 26.5% | 23.8–29.3% | 80.8% |
+| Sparse | 4 | 4.2% | 3.0–5.5% | 28.6% |
+| Sparse | 8 | 0.1% | 0.0–0.3% | 3.4% |
 
-*Takeaway:* Gene-level tools inflate discoveries by over an order of magnitude due to tandem paralog duplication. Even at the family level, 25 of the 28 marginal terms (89%) fail under covariate-balanced permutations because they are driven by large family size. SCB-Enrich isolates the 2 genuinely specialized pathways (*response to salicylic acid* and *recognition of pollen*).
+These estimates use 1,000 independent replicates per configuration. The intervals are not simultaneous across configurations. In continuous scenarios, reference truth is conditional on the generator's continuous covariates, whereas the implemented test conditions on their bins. The sparse scenario with two bins shows that this approximation can be inadequate. The low rejection rate with eight bins accompanies a substantial loss of informative strata and must be interpreted alongside power.
+
+BH adjustment is applied separately to each test family; it cannot repair p-values affected by residual confounding. Statistical significance does not establish biological specialization, and loss of significance after stratification does not establish that a marginal discovery is a size artifact.
+
+The historical results support exploratory assessment under these limitations. A run with the corrected Slurm runner and complete provenance from the outset remains necessary for a fully traceable validation. Consult the [full summary](docs/validation-audit/summary.tsv), [benchmark protocol](docs/benchmark-protocol.md), [comparator audits](benchmarks/comparators/README.md) and [release checks](docs/release-checks.md).
 
 ---
 
@@ -111,7 +77,7 @@ Use `build_master_table` to merge OrthoFinder counts, extract GFF3 gene architec
 ```python
 from scbenrich import build_master_table
 
-# Automatically builds a validated master table
+# Build the master table; inspect the covariates before analysis
 master_df = build_master_table(
     gene_counts="Orthogroups.GeneCount.tsv",          # OrthoFinder gene count matrix
     annotations="annotations.tsv",                   # Functional annotations (Family_ID, Term_ID)
@@ -143,6 +109,7 @@ scb-enrich \
 ```
 
 Key CLI options:
+
 - `--master-table`: Path to TSV/CSV with one row per family and numeric covariates.
 - `--annotations`: Path to family-to-term mapping (`Family_ID`, `Term_ID`, optional `Term_Name`, `Category`).
 - `--foreground`: Column name in master table (boolean or 1/0) or path to a text file with one family ID per line.
@@ -150,7 +117,7 @@ Key CLI options:
 - `--obo`: Path to `go-basic.obo` for hierarchical ancestor propagation and redundancy reduction.
 - `--permutations`: Number of stratified resampling replicates (default: `10000`; set to `0` for marginal tests only).
 - `--bins`: Number of quantile strata per covariate (default: dynamic quantile heuristic).
-- `--out-dir`: Destination folder for all output tables, diagnostics, and run metadata.
+- `--out-dir`: Empty destination directory for output tables, diagnostics and run metadata. Failed runs retain failure metadata.
 
 ### 3. Python API
 
@@ -215,11 +182,13 @@ A tab-separated file linking families to functional terms. Multiple genes in the
 
 ### 1. Marginal Overrepresentation
 For each term, a 2×2 contingency table is constructed across eligible families:
+
 - Evaluates one-sided Fisher's exact test (`greater`).
 - Calculates the exact conditional maximum likelihood odds ratio (`Marginal_OR`) with 95% confidence intervals based on Fisher's noncentral hypergeometric distribution.
 - Computes Benjamini–Hochberg adjusted q-values (`q_value`).
 
 ### 2. Stratified Permutations (`p_strat`)
+
 - Families are jointly partitioned into strata using multi-dimensional quantile binning across the selected covariates.
 - In each of the replicates (default: 10,000), random foreground sets are drawn without replacement within each stratum, strictly preserving the observed foreground size and stratum proportions.
 - The empirical stratified p-value is computed as:
@@ -230,25 +199,37 @@ p_strat = (b + 1) / (B + 1)
 
 where `b` is the number of permutations where the sampled foreground count equals or exceeds the observed count, and `B` is the total number of permutations.
 
+Stratified p-values are adjusted across the tested terms using Benjamini–Hochberg (`p_strat_adjusted`). The marginal and stratified tests target different hypotheses. Their significance decisions are reported independently.
+
 ### 3. Covariate Balance Diagnostic (`Max_SMD`)
-To verify that significance is not driven by residual covariate imbalance between foreground and background families within a term, SCB-Enrich computes the absolute Standardized Mean Difference:
+
+For each term, the code compares the covariates of annotated foreground and annotated background families using a sample-size-weighted pooled standard deviation:
 
 ```text
-SMD = (mean(X_fg) - mean(X_bg)) / sqrt((var(X_fg) + var(X_bg)) / 2)
+s_pool = sqrt(((n_fg - 1) * var(X_fg) + (n_bg - 1) * var(X_bg))
+              / (n_fg + n_bg - 2))
+SMD = (mean(X_fg) - mean(X_bg)) / s_pool
+Max_SMD = maximum absolute SMD across the selected covariates
 ```
 
-Values of `|SMD| < 0.10` indicate that foreground and background families for that category have balanced opportunity distributions.
+Variances use sample estimates when at least two observations are available. Empty groups, insufficient variance information or zero pooled variance with unequal means produce an undefined diagnostic. Equal constant groups have SMD zero.
 
-### 4. Four-Tier Evidence Classification
+`balance_status` is `within_threshold` when `Max_SMD < 0.10`, `above_threshold` otherwise, and `undefined` when it cannot be calculated. This is a descriptive comparison within annotated families. It is not proof of exchangeability, removed confounding or FDR control, and it does not select discoveries. `balance_diagnostics.tsv` separately compares observed foreground covariate means with their distributions under resampling.
 
-Every tested term is classified according to statistical stringency:
+### 4. Independent Decisions and Support States
 
-| Classification | Marginal FDR (`q_local`) | Stratified Permutation (`p_strat`) | Covariate Balance (`\|SMD\|`) | Interpretation |
-| :--- | :---: | :---: | :---: | :--- |
-| **Confirmatory (Robust)** | `< 0.05` | `< 0.05` | `< 0.10` | Highly supported candidate; functional signal is independent of family size and annotation density. |
-| **Suggestive** | `< 0.05` | `< 0.05` | `≥ 0.10` (or marginal `q_global`) | Candidate with empirical permutation support but residual covariate imbalance. |
-| **Size Artifact** | `< 0.05` | `≥ 0.05` | Any | False discovery in standard ORA; significance is explained away by family size or annotation bias. |
-| **Not Significant** | `≥ 0.05` | Any | Any | No marginal overrepresentation detected. |
+| Field | Meaning |
+| :--- | :--- |
+| `marginal_significant` | Finite marginal `q_value < 0.05`. |
+| `stratified_significant` | Finite `p_strat_adjusted < 0.05` and `analysis_status == "ok"`. |
+| `analysis_status` | `ok`, `constant_statistic`, `no_randomization` or `not_run`. |
+| `balance_status` | Descriptive balance state, separate from significance decisions. |
+
+The Python API reports `no_randomization` when no stratum permits exchanges. The CLI rejects that configuration and retains failure metadata. Constant term statistics receive `constant_statistic`; disabling permutations produces `not_run` in CLI decisions.
+
+`Marginal_OR` and its interval describe the marginal family-level comparison, without covariate adjustment. The Monte Carlo `tail_ci_low` and `tail_ci_high` fields describe uncertainty in the exceedance probability; they are not intervals for an effect size or an adjusted p-value.
+
+See [methods](docs/methods.md) and [migration notes](docs/migration.md) for details.
 
 ---
 
@@ -258,16 +239,16 @@ The CLI outputs a structured set of tables and audit diagnostics:
 
 | Output File | Description |
 | :--- | :--- |
-| `enrichment_results_all.tsv` | Complete results for all tested terms: counts, marginal OR, 95% CI, Fisher p-value, BH q-value, raw and adjusted p_strat, Max_SMD, and evidence classification. |
-| `enrichment_results_significant.tsv` | Subset of terms meeting marginal significance (`q < 0.05`). |
-| `enrichment_results_stratified.tsv` | Subset of terms meeting stratified permutation significance (`p_strat_adj < 0.05`). |
+| `enrichment_results_all.tsv` | Complete results for all tested terms: counts, marginal OR, 95% CI, Fisher p-value, BH q-value, raw and adjusted p_strat, Max_SMD, independent significance decisions and diagnostic states. |
+| `enrichment_results_significant.tsv` | Subset of terms meeting marginal significance (`q_value < 0.05`). |
+| `enrichment_results_stratified.tsv` | Subset of terms meeting stratified permutation significance (`p_strat_adjusted < 0.05` and `analysis_status == "ok"`). |
 | `enrichment_results_nonredundant_*.tsv` | Nonredundant term summaries after greedy DAG ancestor reduction (separate for marginal and stratified lists). |
-| `term_reduction_map_*.tsv` | Audit mapping showing which descendant terms pruned which ancestor terms during redundancy reduction. |
+| `term_reduction_map_*.tsv` | Removed terms, retained representatives and reasons for greedy ancestor or overlap reduction. These are descriptive summaries; FDR control is not guaranteed for the reduced lists. |
 | `balance_diagnostics.tsv` | Observed covariate means vs. empirical distribution of null sample means. |
-| `strata_diagnostics.tsv` | Stratum-by-stratum counts of eligible universe, foreground, background, and permutation degrees of freedom. |
+| `strata_diagnostics.tsv` | Stratum-by-stratum counts of eligible universe, foreground, background, possible selections and informative-stratum indicators. |
 | `bin_edges.json` | Exact quantile-bin boundaries used for each continuous covariate. |
 | `go_id_mappings.tsv` | Record of any alternative or obsolete GO IDs normalized via the OBO ontology. |
-| `run_metadata.json` | Complete execution manifest: parameters, input file SHA256 hashes, software versions, and random seed. |
+| `run_metadata.json` | Execution manifest with available parameters, input file SHA256 hashes, software versions, and random seed. |
 
 ---
 
@@ -276,13 +257,13 @@ The CLI outputs a structured set of tables and audit diagnostics:
 The repository includes a simulation suite in `benchmarks/` to evaluate calibration and statistical power:
 
 - **Pilot Simulation (`benchmarks/simulate.py`)**: Tests unconfounded nulls, size-confounded nulls, and true effect scenarios across multi-bin grids.
-- **Large-Scale Validation (`benchmarks/expanded.py` & `benchmarks/slurm.py`)**: Runs high-throughput calibration simulations (63,000 analyses across 1,000 replicates in 7 scenarios) on Slurm clusters to quantify empirical FDR control, power, and interval coverage.
+- **Expanded Validation (`benchmarks/expanded.py` & `benchmarks/slurm.py`)**: Sequential and Slurm runners for calibration, power and coverage assessment. The audited historical run contains 63,000 analyses; interpretation and provenance limitations are described above. The corrected Slurm runner verifies prepared manifests and checkpoint coverage and partitions work along complete batch boundaries.
 - **External Comparator Adapters (`benchmarks/comparators/`)**: Baseline wrappers comparing SCB-Enrich directly with `clusterProfiler`, `topGO`, and `GOATOOLS` on harmonized datasets.
 
 To run the pilot benchmark:
 
 ```bash
-python -m benchmarks.simulate --replicates 30 --permutations 199 --bins 2 4 8 --seed 42 --out-dir benchmark_results
+python -m benchmarks.simulate --replicates 30 --permutations 199 --bins 2 4 8 --seed 42 --out-dir benchmark_results/pilot
 ```
 
 ---

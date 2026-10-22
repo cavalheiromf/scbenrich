@@ -1,11 +1,11 @@
-# Interpretação do piloto histórico
+# Interpretation of the historical pilot
 
-Os arquivos config.json, replicates.tsv e summary.tsv foram preservados. Usam o esquema antigo de métricas.
+The config.json, replicates.tsv and summary.tsv files have been preserved. They use the old metric schema.
 
-Nos cenários confundidos, os termos null_* têm associação marginal esperada com o foreground e nenhum efeito adicional condicionado ao tamanho. Portanto, os valores históricos false_discoveries, false_discovery_proportion e empirical_fdr de Fisher nesses cenários quantificam divergência em relação ao alvo condicionado. Não demonstram erro tipo I ou inflação de FDR para a hipótese marginal do Fisher.
+In confounded scenarios, null_* terms have an expected marginal association with the foreground and no additional effect conditional on size. Therefore, the historical false_discoveries, false_discovery_proportion and empirical_fdr values for Fisher in these scenarios quantify disagreement with the conditional target. They do not demonstrate type I error or FDR inflation for Fisher's marginal hypothesis.
 
-Os 60% em confounded_null indicam que Fisher detectou pelo menos uma dessas associações marginais em 18 de 30 réplicas. Não autorizam afirmar que o teste marginal teve 60% de falsos positivos.
+The 60% in confounded_null indicates that Fisher detected at least one of these marginal associations in 18 of 30 replicates. It does not justify claiming that the marginal test had 60% false positives.
 
-rejection_rate é a frequência de ao menos uma descoberta definida como falsa pelo esquema antigo. Seus intervalos binomiais não são intervalos para FDR no cenário misto. Para estratificação, o alvo continua condicionado ao tamanho contínuo, enquanto a implementação usa bins e pode reter confundimento residual.
+rejection_rate is the frequency of at least one discovery defined as false under the old schema. Its binomial intervals are not FDR intervals in a mixture of null and alternative terms. For stratification, the target remains conditional on continuous size, whereas the implementation uses bins and may retain residual confounding.
 
-Resultados novos usam metric_schema=2, verdades marginais e condicionadas explícitas e probability_any_false_discovery. Não misturar resumos dos dois esquemas.
+New results use metric_schema=2, explicit marginal and conditional truths, and probability_any_false_discovery. Do not mix summaries from the two schemas.

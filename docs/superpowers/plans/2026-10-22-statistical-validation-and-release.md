@@ -2,64 +2,64 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Execute inline unless delegation is explicitly authorized.
 
-**Goal:** Corrigir as pendências inferenciais e operacionais identificadas na revisão, produzir evidência de validação proporcional às alegações e preparar um release exploratório reproduzível.
+**Goal:** Address the inferential and operational issues identified during review, produce validation evidence proportional to the claims, and prepare a reproducible exploratory release.
 
-**Architecture:** Preservar os testes por família e a interface básica de entrada. Separar decisão estatística, suporte da randomização e diagnóstico de covariáveis; centralizar validação e proveniência em módulos pequenos. A validação deve distinguir hipóteses marginais e condicionadas antes de comparar métodos.
+**Architecture:** Preserve family-level tests and the basic input interface. Separate statistical decisions, randomization support and covariate diagnostics; centralize validation and provenance in small modules. Validation must distinguish marginal and conditional hypotheses before comparing methods.
 
-**Tech Stack:** Python >=3.8, NumPy, pandas, SciPy >=1.10, pytest; ambiente `.venv` existente. Matplotlib como dependência opcional de benchmark para figuras.
+**Tech Stack:** Python >=3.8, NumPy, pandas, SciPy >=1.10, pytest; existing `.venv` environment. Matplotlib as an optional benchmark dependency for figures.
 
 ## Global Constraints
 
-- Hipótese principal: sobre-representação condicionada aos estratos especificados, sob permutabilidade dentro deles.
-- Fisher e OR condicional às margens continuam sendo análises marginais complementares.
-- Não interpretar perda de significância como artefato, causalidade ou ausência de efeito.
-- Preservar as alterações locais existentes; `.ll` não pertence a este trabalho.
-- Não executar `git add .`; selecionar os arquivos de cada tarefa.
-- Não usar o resultado do benchmark para escolher retrospectivamente o default mais favorável.
-- Não considerar os 16 testes atuais evidência de calibração geral.
-- Não prometer equivalência de resultados entre versões de dependências apenas por usar a mesma semente.
-- Mudanças de colunas e nomes de arquivos precisam de nota de migração.
-- Commit, publicação e instalação global não fazem parte da criação deste plano.
+- Primary hypothesis: overrepresentation conditional on the specified strata, under exchangeability within them.
+- Fisher's test and the OR conditional on the margins remain complementary marginal analyses.
+- Do not interpret loss of significance as an artifact, causality or absence of an effect.
+- Preserve existing local changes; `.ll` is outside the scope of this work.
+- Do not run `git add .`; select the files for each task.
+- Do not use benchmark results to retrospectively choose the most favorable default.
+- Do not treat the current 16 tests as evidence of general calibration.
+- Do not promise equivalent results across dependency versions solely because the same seed is used.
+- Changes to columns and filenames require migration notes.
+- Commits, publication and global installation are not part of creating this plan.
 
-## Situação inicial e escopo
+## Initial State and Scope
 
-Já existem BH para p-valores estratificados, tratamento parcial de SMD indefinido, relatório por estrato, OR via SciPy, normalização GO simples, mapa de redução, manifesto parcial e benchmark piloto. Esses componentes devem ser corrigidos e ampliados, sem reimplementação desnecessária.
+BH adjustment for stratified p-values, partial handling of undefined SMD, stratum reports, OR through SciPy, simple GO normalization, reduction maps, partial manifests and a pilot benchmark already exist. These components should be corrected and extended without unnecessary reimplementation.
 
-O plano é dividido em entregas independentemente revisáveis:
+The plan is divided into independently reviewable deliveries:
 
-1. Contratos inferenciais, diagnósticos e segurança das entradas.
-2. GO, saídas e reprodução.
-3. Validação metodológica e preparação do release.
+1. Inference contracts, diagnostics and input safety.
+2. GO, outputs and reproducibility.
+3. Methodological validation and release preparation.
 
-## Mapa de arquivos
+## File Map
 
-| Arquivo | Responsabilidade |
+| File | Responsibility |
 |---|---|
-| `scbenrich/core/inference.py` (novo) | Campos independentes de decisão e estado. |
-| `scbenrich/utils/validation.py` (novo) | Validação compartilhada pela CLI e API. |
-| `scbenrich/core/stratified.py` | Amostragem, suporte por termo e diagnósticos das amostras nulas. |
-| `scbenrich/core/stats.py` | Ajustes múltiplos e interface numérica da OR. |
-| `scbenrich/core/obo.py` | Parsing, normalização de IDs e detecção de ciclos. |
-| `scbenrich/core/dag.py` | Resumo de apresentação e mapa de remoções. |
-| `scbenrich/utils/provenance.py` (novo) | Manifesto, hashes e identificação do código. |
-| `scbenrich/cli.py` | Orquestração e exportação, sem duplicar validações. |
-| `benchmarks/simulate.py` | Geradores com verdades marginais e condicionadas explícitas. |
-| `benchmarks/report.py` (novo) | Resumos, incerteza e figuras a partir dos resultados brutos. |
-| `tests/test_inference.py`, `tests/test_validation.py`, `tests/test_ontology.py`, `tests/test_provenance.py` (novos) | Contratos e regressões dos novos componentes. |
-| `tests/test_benchmark.py` | Verdade simulada, métricas e reprodução. |
-| `README.md`, `docs/methods.md`, `docs/migration.md` | Método, pressupostos, limitações e migração. |
+| `scbenrich/core/inference.py` (new) | Independent decision and status fields. |
+| `scbenrich/utils/validation.py` (new) | Shared CLI and API validation. |
+| `scbenrich/core/stratified.py` | Sampling, term-level support and null-sample diagnostics. |
+| `scbenrich/core/stats.py` | Multiple-testing adjustments and numerical OR interface. |
+| `scbenrich/core/obo.py` | Parsing, ID normalization and cycle detection. |
+| `scbenrich/core/dag.py` | Presentation summaries and removal maps. |
+| `scbenrich/utils/provenance.py` (new) | Manifests, hashes and code identification. |
+| `scbenrich/cli.py` | Orchestration and export without duplicated validation. |
+| `benchmarks/simulate.py` | Generators with explicit marginal and conditional truths. |
+| `benchmarks/report.py` (new) | Summaries, uncertainty and figures from raw results. |
+| `tests/test_inference.py`, `tests/test_validation.py`, `tests/test_ontology.py`, `tests/test_provenance.py` (new) | Contracts and regression tests for new components. |
+| `tests/test_benchmark.py` | Simulated truth, metrics and reproduction. |
+| `README.md`, `docs/methods.md`, `docs/migration.md` | Method, assumptions, limitations and migration. |
 
-## Tarefa 1 — Fixar a interpretação e o contrato das decisões
+## Task 1 — Define Interpretation and the Decision Contract
 
-**Dependências:** nenhuma.
+**Dependencies:** none.
 
-**Arquivos:** criar `scbenrich/core/inference.py`, `tests/test_inference.py`, `docs/methods.md`, `docs/migration.md`; modificar `scbenrich/cli.py`, `scbenrich/__init__.py`, `README.md`.
+**Files:** create `scbenrich/core/inference.py`, `tests/test_inference.py`, `docs/methods.md`, `docs/migration.md`; modify `scbenrich/cli.py`, `scbenrich/__init__.py`, `README.md`.
 
 **Interface:** `decision_fields(q_marginal, q_stratified, analysis_status, balance_status, alpha=0.05) -> dict`.
 
-Retornar `marginal_significant`, `stratified_significant`, `analysis_status`, `balance_status`. Estados da análise: `ok`, `no_randomization`, `constant_statistic`, `not_run`. Estados do balanceamento: `within_threshold`, `above_threshold`, `undefined`; esses campos não filtram a lista de descobertas estratificadas.
+Return `marginal_significant`, `stratified_significant`, `analysis_status`, `balance_status`. Analysis states: `ok`, `no_randomization`, `constant_statistic`, `not_run`. Balance states: `within_threshold`, `above_threshold`, `undefined`; these fields do not filter the stratified discovery list.
 
-- [ ] Escrever o teste de independência entre significância e diagnóstico:
+- [ ] Write a test for independence between significance and diagnostics:
 
 ```python
 result = decision_fields(0.8, 0.01, "ok", "undefined")
@@ -69,187 +69,187 @@ assert result["balance_status"] == "undefined"
 assert not decision_fields(0.01, 0.01, "no_randomization", "undefined")["stratified_significant"]
 ```
 
-- [ ] Executar `.venv/bin/python -m pytest tests/test_inference.py -q`; confirmar falha por interface ausente.
-- [ ] Implementar a decisão com comparações em precisão completa: `q < alpha`; p-valor ausente nunca produz descoberta. Validar `0 < alpha < 1`.
-- [ ] Substituir o uso decisório de `Evidence_Class`; documentar a remoção dessa coluna em `docs/migration.md`.
-- [ ] Renomear a descrição da OR para `Marginal_OR` e manter os ICs explicitamente marginais; registrar a migração das colunas antigas.
-- [ ] Remover das docstrings as promessas de controle explícito de todas as covariáveis e de nulos rigorosos sem pressupostos.
-- [ ] Executar os testes da tarefa e os testes existentes da CLI; atualizar expectativas apenas para as mudanças intencionais.
+- [ ] Run `.venv/bin/python -m pytest tests/test_inference.py -q`; confirm failure because the interface is missing.
+- [ ] Implement decisions using full-precision comparisons: `q < alpha`; a missing p-value never produces a discovery. Validate `0 < alpha < 1`.
+- [ ] Replace decision-making uses of `Evidence_Class`; document removal of this column in `docs/migration.md`.
+- [ ] Rename the OR description to `Marginal_OR` and keep confidence intervals explicitly marginal; record migration of old columns.
+- [ ] Remove docstring promises of explicit control of all covariates and rigorous null models without assumptions.
+- [ ] Run task tests and existing CLI tests; update expectations only for intentional changes.
 
-**Aceite:** uma descoberta estratificada pode coexistir com diagnóstico indefinido sem contradição entre tabela completa e lista exportada; não há rótulo de confirmação ou artefato.
+**Acceptance:** a stratified discovery may coexist with an undefined diagnostic without contradiction between the full table and the exported list; no confirmatory or artifact label remains.
 
-## Tarefa 2 — Validação compartilhada e contratos da API
+## Task 2 — Shared Validation and API Contracts
 
-**Dependência:** tarefa 1 para os estados exportados.
+**Dependency:** task 1 for exported states.
 
-**Arquivos:** criar `scbenrich/utils/validation.py`, `tests/test_validation.py`; modificar `scbenrich/utils/io.py`, `scbenrich/core/stratified.py`, `scbenrich/cli.py`.
+**Files:** create `scbenrich/utils/validation.py`, `tests/test_validation.py`; modify `scbenrich/utils/io.py`, `scbenrich/core/stratified.py`, `scbenrich/cli.py`.
 
 **Interfaces:** `validate_family_inputs(covariates, foreground_ids, term_matrix) -> None`; `validate_parameters(permutations, bins, alpha) -> None`.
 
-- [ ] Criar testes parametrizados para IDs duplicados, nulos ou somente espaços, matriz não binária, IDs extras/ausentes na matriz, foreground vazio/completo, covariável não numérica/não finita, bins <2 e contagem negativa ou fracionária de permutações.
+- [ ] Create parameterized tests for duplicate, null or whitespace-only IDs, nonbinary matrices, extra/missing matrix IDs, empty/full foregrounds, nonnumeric/nonfinite covariates, bins <2, and negative or fractional permutation counts.
 
 ```python
 with pytest.raises(ValueError, match="binary"):
     validate_family_inputs(cov, {"A"}, pd.DataFrame({"T": [1, 2]}, index=["A", "B"]))
 ```
 
-- [ ] Rodar `.venv/bin/python -m pytest tests/test_validation.py -q` e verificar as falhas esperadas.
-- [ ] Ler IDs como strings, preservando zeros iniciais; rejeitar valores vazios após inspeção de espaços. Não transformar silenciosamente IDs distintos em um único ID.
-- [ ] Na API, alinhar a ordem da matriz por índice somente depois de validar igualdade dos conjuntos de IDs.
-- [ ] No foreground por coluna, rejeitar ausências e tokens desconhecidos; definir explicitamente os valores falsos aceitos (`0`, `false`, `no`, `not_expanded`).
-- [ ] Anotações fora do universo: rejeitar por padrão com contagem e exemplos; não descartá-las silenciosamente.
-- [ ] Sem termos elegíveis: exportar tabelas vazias com cabeçalhos e estado `no_testable_terms`, sem erro de indexação.
-- [ ] Executar testes novos e suíte completa.
+- [ ] Run `.venv/bin/python -m pytest tests/test_validation.py -q` and verify the expected failures.
+- [ ] Read IDs as strings, preserving leading zeros; reject values that are empty after checking whitespace. Do not silently merge distinct IDs.
+- [ ] In the API, align matrix order by index only after validating equality of ID sets.
+- [ ] For column-based foregrounds, reject missing and unknown tokens; explicitly define accepted false values (`0`, `false`, `no`, `not_expanded`).
+- [ ] Reject annotations outside the universe by default, with counts and examples; do not silently discard them.
+- [ ] When no terms are eligible, export empty tables with headers and `no_testable_terms` status, without indexing errors.
+- [ ] Run new tests and the full suite.
 
-**Aceite:** CLI e API rejeitam as mesmas entradas inválidas, preservam IDs e produzem resultado legível quando não há hipóteses testáveis.
+**Acceptance:** CLI and API reject the same invalid inputs, preserve IDs and produce readable results when there are no testable hypotheses.
 
-## Tarefa 3 — Suporte por termo, bins e incerteza Monte Carlo
+## Task 3 — Term-Level Support, Bins and Monte Carlo Uncertainty
 
-**Dependências:** tarefas 1–2.
+**Dependencies:** tasks 1–2.
 
-**Arquivos:** modificar `scbenrich/core/stratified.py`, `scbenrich/cli.py`, `tests/test_delivery_one.py`; criar `tests/test_randomization.py`.
+**Files:** modify `scbenrich/core/stratified.py`, `scbenrich/cli.py`, `tests/test_delivery_one.py`; create `tests/test_randomization.py`.
 
-**Interface nova:** `run_analysis(foreground_ids, term_matrix, n_permutations=10000) -> dict`, contendo `terms` (DataFrame), `strata` (DataFrame), `balance` (DataFrame). Manter `run_permutations` como adaptador que devolve o dicionário antigo.
+**New interface:** `run_analysis(foreground_ids, term_matrix, n_permutations=10000) -> dict`, containing `terms` (DataFrame), `strata` (DataFrame), `balance` (DataFrame). Keep `run_permutations` as an adapter returning the previous dictionary.
 
-- [ ] Testar um universo de quatro famílias e dois selecionados contra as seis seleções enumeráveis; conferir estatística observada, limites possíveis e amostras sem duplicação.
-- [ ] Testar um termo constante em todos os subconjuntos apesar de haver randomização global.
-- [ ] Por estrato, com `N` famílias, `K` anotadas e `k` selecionadas, somar os limites `max(0, k-(N-K))` e `min(k,K)` para obter suporte da contagem por termo.
-- [ ] Marcar `constant_statistic` quando limites coincidirem; retornar p=1 e nenhuma descoberta. Registrar `no_randomization` quando todas as seleções forem fixas.
-- [ ] Exportar excedências, B realizado, `(b+1)/(B+1)` e resolução `1/(B+1)`.
-- [ ] Calcular IC binomial para a probabilidade de excedência Monte Carlo usando `scipy.stats.binomtest`; nomear como incerteza da estimativa da cauda, não IC do efeito biológico.
-- [ ] Expor `--bins` na CLI e preservar o default atual quando omitido. Registrar limites efetivos dos bins, incluindo colapso de limites repetidos.
-- [ ] Exportar, por covariável, média e quantis do foreground observado e da distribuição das médias das réplicas; manter SMD por termo apenas como descrição separada.
-- [ ] Testar determinismo com a mesma semente e avanço de estado ao reutilizar a instância.
-- [ ] Rodar `.venv/bin/python -m pytest tests/test_randomization.py tests/test_delivery_one.py -q`.
+- [ ] Test a universe of four families with two selected against the six enumerable selections; verify the observed statistic, possible bounds and samples without duplicates.
+- [ ] Test a term that is constant across all subsets despite global randomization being possible.
+- [ ] For each stratum with `N` families, `K` annotated and `k` selected, sum the bounds `max(0, k-(N-K))` and `min(k,K)` to obtain support for each term count.
+- [ ] Mark `constant_statistic` when bounds coincide; return p=1 and no discovery. Record `no_randomization` when all selections are fixed.
+- [ ] Export exceedances, actual B, `(b+1)/(B+1)` and resolution `1/(B+1)`.
+- [ ] Calculate a binomial interval for the Monte Carlo exceedance probability using `scipy.stats.binomtest`; describe it as uncertainty in the tail estimate, not a biological effect interval.
+- [ ] Expose `--bins` in the CLI and preserve the current default when omitted. Record effective bin boundaries, including collapsed repeated boundaries.
+- [ ] Export means and quantiles for each covariate in the observed foreground and the distribution of resampled means; keep term-level SMD as a separate description.
+- [ ] Test determinism for the same seed and state advancement when reusing an instance.
+- [ ] Run `.venv/bin/python -m pytest tests/test_randomization.py tests/test_delivery_one.py -q`.
 
-**Aceite:** o usuário distingue falta de suporte, pouca precisão Monte Carlo e ausência de significância; a definição do nulo e a regra de parada permanecem fixas.
+**Acceptance:** users can distinguish insufficient support, low Monte Carlo precision and lack of significance; the null definition and stopping rule remain fixed.
 
-## Tarefa 4 — GO sem substituições ambíguas ou recursão cíclica
+## Task 4 — GO Without Ambiguous Replacements or Cyclic Recursion
 
-**Dependência:** tarefa 2.
+**Dependency:** task 2.
 
-**Arquivos:** modificar `scbenrich/core/obo.py`, `scbenrich/cli.py`; criar `tests/test_ontology.py`.
+**Files:** modify `scbenrich/core/obo.py`, `scbenrich/cli.py`; create `tests/test_ontology.py`.
 
-**Interface:** `normalize_go_id(term_id, terms, alt_map, replacements) -> str`; `replacements` passa a ser `dict[str, set[str]]` conceitualmente, usando anotações compatíveis com Python 3.8.
+**Interface:** `normalize_go_id(term_id, terms, alt_map, replacements) -> str`; `replacements` conceptually becomes `dict[str, set[str]]`, using annotations compatible with Python 3.8.
 
-- [ ] Criar pequenos OBOs sintéticos com dois `replaced_by`, cadeia de substituição, destino inexistente, ciclo e múltiplos pais válidos.
+- [ ] Create small synthetic OBO files with two `replaced_by` entries, a replacement chain, nonexistent destination, cycle and multiple valid parents.
 
 ```python
 with pytest.raises(ValueError, match="ambiguous"):
     normalize_go_id("GO:0000001", terms, {}, {"GO:0000001": {"GO:0000002", "GO:0000003"}})
 ```
 
-- [ ] Rodar `.venv/bin/python -m pytest tests/test_ontology.py -q` e confirmar falhas.
-- [ ] Preservar todas as substituições no parser. Resolver cadeias iterativamente com conjunto de visitados; rejeitar ciclo, múltiplos destinos e destino ausente.
-- [ ] Para ancestrais, usar estados não visitado/em processamento/concluído; uma aresta para nó em processamento deve produzir erro que identifique o ciclo.
-- [ ] Distinguir GO desconhecido de termo não GO; com OBO, rejeitar GO desconhecido e preservar termos não GO sem propagação.
-- [ ] Exportar caminho completo de normalização e motivo de cada transformação. Atualizar nomes e categorias com o ID canônico.
-- [ ] Manter somente `is_a` e `part_of`; testar explicitamente que `has_part` e `regulates` não propagam.
-- [ ] Rodar testes de ontologia e integração da CLI.
+- [ ] Run `.venv/bin/python -m pytest tests/test_ontology.py -q` and confirm failures.
+- [ ] Preserve all replacements in the parser. Resolve chains iteratively using a visited set; reject cycles, multiple destinations and missing destinations.
+- [ ] For ancestors, use unvisited/processing/completed states; an edge to a node being processed must raise an error identifying the cycle.
+- [ ] Distinguish unknown GO terms from non-GO terms; with OBO supplied, reject unknown GO terms and preserve non-GO terms without propagation.
+- [ ] Export the complete normalization path and reason for each transformation. Update names and categories using the canonical ID.
+- [ ] Keep only `is_a` and `part_of`; explicitly test that `has_part` and `regulates` do not propagate.
+- [ ] Run ontology and CLI integration tests.
 
-**Aceite:** nenhuma ambiguidade é resolvida pela ordem das linhas do OBO; grafos cíclicos falham com mensagem identificável.
+**Acceptance:** no ambiguity is resolved by OBO line order; cyclic graphs fail with an identifiable message.
 
-## Tarefa 5 — Resumos e proveniência sem mistura de execuções
+## Task 5 — Summaries and Provenance Without Mixing Runs
 
-**Dependências:** tarefas 1–4.
+**Dependencies:** tasks 1–4.
 
-**Arquivos:** criar `scbenrich/utils/provenance.py`, `tests/test_provenance.py`; modificar `scbenrich/cli.py`, `scbenrich/core/dag.py`, `README.md`.
+**Files:** create `scbenrich/utils/provenance.py`, `tests/test_provenance.py`; modify `scbenrich/cli.py`, `scbenrich/core/dag.py`, `README.md`.
 
 **Interfaces:** `build_manifest(args, inputs, outputs, status) -> dict`; `write_manifest(path, manifest) -> None`.
 
-- [ ] Testar que duas colunas diferentes de foreground geram manifestos diferentes mesmo com os mesmos hashes de entrada.
-- [ ] Testar que uma pasta com artefatos de outra execução é rejeitada, preservando todos os arquivos existentes.
-- [ ] Criar diretório exclusivo por execução ou exigir pasta vazia. Nunca limpar silenciosamente uma pasta fornecida pelo usuário.
-- [ ] Registrar argumentos normalizados, foreground (arquivo ou coluna), hashes, versões, gerador RNG, seed, B, bins, método de ajuste, commit, indicador de mudanças locais e hashes dos módulos utilizados.
-- [ ] Tratar ausência de Git como estado explícito; versão/hash do código continua obrigatório.
-- [ ] Gravar manifesto inicialmente com `running`, depois `completed` ou `failed`; em falha registrar tipo e mensagem, sem substituir o erro original.
-- [ ] Exportar resumos GO marginais e estratificados em arquivos diferentes. A redução deve usar exatamente a lista declarada no nome do arquivo.
-- [ ] Manter mapas separados para cada resumo. Informar regra, limiar e representante de cada remoção.
-- [ ] Testar termo significativo apenas na análise estratificada: deve estar no resumo estratificado e ausente no marginal.
-- [ ] Rodar `.venv/bin/python -m pytest tests/test_provenance.py tests/test_delivery_two.py -q`.
+- [ ] Test that two different foreground columns produce different manifests even with identical input hashes.
+- [ ] Test that a directory containing artifacts from another run is rejected, preserving all existing files.
+- [ ] Create a dedicated directory for each run or require an empty directory. Never silently clear a user-supplied directory.
+- [ ] Record normalized arguments, foreground file or column, hashes, versions, RNG generator, seed, B, bins, adjustment method, commit, local-change indicator and hashes of modules used.
+- [ ] Treat missing Git information as an explicit state; code version/hash remains mandatory.
+- [ ] Write the initial manifest with `running`, followed by `completed` or `failed`; on failure, record error type and message without replacing the original error.
+- [ ] Export marginal and stratified GO summaries in separate files. Reduction must use exactly the list declared in the filename.
+- [ ] Keep separate maps for each summary. Report the rule, threshold and representative for each removal.
+- [ ] Test a term significant only in the stratified analysis: it must appear in the stratified summary and be absent from the marginal summary.
+- [ ] Run `.venv/bin/python -m pytest tests/test_provenance.py tests/test_delivery_two.py -q`.
 
-**Aceite:** cada arquivo pertence a uma execução identificável; a seleção usada pode ser reconstruída; resumos não omitem silenciosamente descobertas da análise que representam.
+**Acceptance:** each file belongs to an identifiable run; the selection used can be reconstructed; summaries do not silently omit discoveries from the analysis they represent.
 
-## Tarefa 6 — Corrigir a verdade de referência do benchmark
+## Task 6 — Correct Benchmark Reference Truth
 
-**Dependências:** tarefa 1; executável antes das demais tarefas operacionais.
+**Dependencies:** task 1; executable before the remaining operational tasks.
 
-**Arquivos:** modificar `benchmarks/simulate.py`, `tests/test_benchmark.py`; criar `docs/benchmark-protocol.md`; atualizar `README.md`.
+**Files:** modify `benchmarks/simulate.py`, `tests/test_benchmark.py`; create `docs/benchmark-protocol.md`; update `README.md`.
 
-**Contrato:** cada termo simulado possui `marginal_null` e `conditional_null`. As duas verdades não são inferidas do p-valor obtido.
+**Contract:** each simulated term has `marginal_null` and `conditional_null`. Neither truth is inferred from the resulting p-value.
 
-- [ ] Criar teste determinístico para o cenário em que tamanho aumenta seleção e anotação: a covariância marginal esperada é positiva, embora a associação condicional adicional seja zero.
-- [ ] Rotular os resultados de Fisher contra o nulo condicionado como `conditional_target_mismatch`, e não como erro tipo I de Fisher.
-- [ ] Manter métricas de erro de cada método contra seu próprio alvo; comparar poder diretamente apenas nos cenários de alvos coincidentes.
-- [ ] Preservar o piloto original como artefato histórico, acompanhado de nota de interpretação; não sobrescrever resultados antigos com novas definições.
-- [ ] Renomear `rejection_rate` para `probability_any_false_discovery`. Em nulo global ela coincide com FDR; em cenário misto não coincide.
-- [ ] Especificar em `docs/benchmark-protocol.md` cenários, sementes, bins, métricas e regras de análise antes da execução ampliada.
-- [ ] Rodar `.venv/bin/python -m pytest tests/test_benchmark.py -q`.
+- [ ] Create a deterministic test for a scenario in which size increases selection and annotation: expected marginal covariance is positive even though additional conditional association is zero.
+- [ ] Label Fisher results against the conditional null as `conditional_target_mismatch`, rather than Fisher type I error.
+- [ ] Keep each method's error metrics relative to its own target; compare power directly only in scenarios with matching targets.
+- [ ] Preserve the original pilot as a historical artifact with an interpretation note; do not overwrite old results with new definitions.
+- [ ] Rename `rejection_rate` to `probability_any_false_discovery`. Under the global null it equals FDR; in a mixture scenario it does not.
+- [ ] Specify scenarios, seeds, bins, metrics and analysis rules in `docs/benchmark-protocol.md` before the expanded run.
+- [ ] Run `.venv/bin/python -m pytest tests/test_benchmark.py -q`.
 
-**Aceite:** nenhuma conclusão de superioridade depende de chamar associação marginal verdadeira de falso positivo marginal.
+**Acceptance:** no superiority claim depends on labeling a true marginal association as a marginal false positive.
 
-## Tarefa 7 — Ampliar simulações e incerteza
+## Task 7 — Expand Simulations and Uncertainty
 
-**Dependências:** tarefas 3 e 6.
+**Dependencies:** tasks 3 and 6.
 
-**Arquivos:** modificar `benchmarks/simulate.py`, `tests/test_benchmark.py`; criar `benchmarks/report.py`, `benchmarks/configs/validation.json`, `tests/test_benchmark_report.py`.
+**Files:** modify `benchmarks/simulate.py`, `tests/test_benchmark.py`; create `benchmarks/report.py`, `benchmarks/configs/validation.json`, `tests/test_benchmark_report.py`.
 
-**Saídas:** resultados por termo, por réplica, resumo por cenário, configuração, hashes do código e versões. Todas as unidades de erro devem estar identificadas.
+**Outputs:** term-level results, replicate-level results, scenario summaries, configuration, code hashes and versions. All units used in error estimates must be identified.
 
-- [ ] Acrescentar tamanho, homólogos de referência e grau anotacional. Incluir variantes em que grau é externo e em que é calculado da matriz testada.
-- [ ] Incluir cinco famílias de cenários: permutabilidade exata; confundimento contínuo residual; anotação incompleta dependente do tamanho; termos dependentes por estrutura ancestral; estratos esparsos e seleções quase determinísticas.
-- [ ] Fixar grids iniciais de bins `[2, 4, 8]`, efeitos OR `[1, 2, 4]`, taxas de ausência `[0, 0.3, 0.6]`; executar primeiro combinações predefinidas que isolem um fator por vez, evitando expansão combinatória sem objetivo.
-- [ ] Executar um smoke test com 5 réplicas e 99 permutações para cada cenário, verificando arquivos, estados e reprodução.
-- [ ] Executar validação com 1.000 réplicas por cenário selecionado e 9.999 permutações, em lotes retomáveis de 50 réplicas; registrar tempo e falhas de cada lote.
-- [ ] Registrar sementes independentes por cenário, réplica e método via `SeedSequence`; adicionar um cenário não deve alterar as simulações anteriores.
-- [ ] Reportar FDR como média da proporção de falsas descobertas por réplica; usar bootstrap por réplica para IC de FDR e diferenças pareadas. Para poder binário e cobertura, usar IC binomial quando a unidade for uma réplica independente.
-- [ ] Gerar curvas de calibração por termo nulo, gráficos de poder/FDR por bins e cobertura de ICs. Não tratar milhares de termos da mesma réplica como observações independentes.
-- [ ] Calcular cobertura da OR somente quando seu alvo marginal é conhecido; não comparar IC marginal com OR condicional ao tamanho.
-- [ ] Não trocar defaults após observar qual configuração teve melhor resultado; resultados fora do nominal motivam investigação e nova validação com protocolo separado.
+- [ ] Add size, reference homolog count and annotation degree. Include variants where degree is external and where it is calculated from the tested matrix.
+- [ ] Include five scenario families: exact exchangeability; residual continuous confounding; size-dependent incomplete annotation; terms dependent through ancestor structure; sparse strata and nearly deterministic selection.
+- [ ] Fix initial grids of bins `[2, 4, 8]`, OR effects `[1, 2, 4]` and missingness rates `[0, 0.3, 0.6]`; first run predefined combinations that isolate one factor at a time, avoiding purposeless combinatorial expansion.
+- [ ] Run a smoke test with 5 replicates and 99 permutations for each scenario, checking files, states and reproduction.
+- [ ] Run validation with 1,000 replicates per selected scenario and 9,999 permutations, in resumable batches of 50 replicates; record runtime and failures for each batch.
+- [ ] Record independent seeds by scenario, replicate and method via `SeedSequence`; adding a scenario must not change previous simulations.
+- [ ] Report FDR as the mean false discovery proportion per replicate; use replicate bootstrap intervals for FDR and paired differences. For binary power and coverage, use binomial intervals when the unit is an independent replicate.
+- [ ] Generate null-term calibration curves, power/FDR plots by bins and confidence interval coverage plots. Do not treat thousands of terms in the same replicate as independent observations.
+- [ ] Calculate OR coverage only when its marginal target is known; do not compare marginal intervals with an OR conditional on size.
+- [ ] Do not change defaults after observing which configuration performed best; results outside nominal levels motivate investigation and new validation under a separate protocol.
 
-**Aceite:** relatório reproduzível com incerteza, pressupostos e situações de falha; ausência de diferenças significativas não é prova de equivalência.
+**Acceptance:** a reproducible report with uncertainty, assumptions and failure conditions; absence of significant differences is not proof of equivalence.
 
-## Tarefa 8 — Comparadores externos e estudos de caso
+## Task 8 — External Comparators and Case Studies
 
-**Dependência:** tarefa 6; análises ampliadas dependem da tarefa 7.
+**Dependency:** task 6; expanded analyses depend on task 7.
 
-**Arquivos:** criar `benchmarks/comparators/README.md` e adaptadores específicos apenas para ferramentas realmente instaladas e fixadas por versão.
+**Files:** create `benchmarks/comparators/README.md` and specific adapters only for tools that are actually installed and version-pinned.
 
-- [ ] Definir duas comparações: unidade gene e unidade família, sem misturá-las na mesma estimativa de erro.
-- [ ] Exportar matrizes e universos idênticos para Fisher, GOATOOLS, clusterProfiler e algoritmos topGO explicitamente identificados.
-- [ ] Registrar propagação, filtros, relações GO, alternativas dos testes e ajuste múltiplo de cada comparador.
-- [ ] Confirmar que dois implementadores de Fisher recuperam os mesmos resultados no mesmo problema; diferenças devem ser investigadas antes de comparar métodos distintos.
-- [ ] Acrescentar estudos de caso com quinases, P450s e NLRs somente com dados e versões recuperáveis; tratá-los como plausibilidade biológica, não verdade automática de calibração.
-- [ ] Caso os dados reais não estejam disponíveis, marcar a seção como não executada e concluir separadamente a validação simulada; não inventar controles.
+- [ ] Define two comparisons: gene-level and family-level, without mixing them in the same error estimate.
+- [ ] Export identical matrices and universes for Fisher, GOATOOLS, clusterProfiler and explicitly identified topGO algorithms.
+- [ ] Record propagation, filters, GO relationships, test alternatives and multiple-testing adjustment for each comparator.
+- [ ] Confirm that two Fisher implementations recover the same results for the same problem; investigate differences before comparing distinct methods.
+- [ ] Add kinase, P450 and NLR case studies only with recoverable data and versions; treat them as biological plausibility, not automatic calibration truth.
+- [ ] If real data are unavailable, mark the section as unexecuted and complete simulated validation separately; do not invent controls.
 
-**Aceite:** comparação deixa explícita a hipótese de cada ferramenta e permite reproduzir seu universo e suas anotações.
+**Acceptance:** comparisons make each tool's hypothesis explicit and allow its universe and annotations to be reproduced.
 
-## Tarefa 9 — Revisão integrada e release exploratório
+## Task 9 — Integrated Review and Exploratory Release
 
-**Dependências:** tarefas 1–6 para release exploratório; tarefas 7–8 para alegações metodológicas mais amplas.
+**Dependencies:** tasks 1–6 for an exploratory release; tasks 7–8 for broader methodological claims.
 
-**Arquivos:** `README.md`, `docs/methods.md`, `docs/migration.md`, `pyproject.toml`, `.github/workflows/tests.yml` (novo).
+**Files:** `README.md`, `docs/methods.md`, `docs/migration.md`, `pyproject.toml`, `.github/workflows/tests.yml` (new).
 
-- [ ] Executar `.venv/bin/python -m pytest -q` e `git diff --check`; exigir sucesso.
-- [ ] Executar CLI com os exemplos, sem permutações, com permutações, sem termos elegíveis e com erro GO proposital; conferir estados e arquivos de cada execução.
-- [ ] Testar instalação limpa e Python mínimo anunciado, além de uma versão moderna; atualizar o suporte anunciado se a matriz não puder ser atendida.
-- [ ] Revisar todo texto que contenha `rigorous`, `robust`, `confirmatory`, `artifact` e equivalentes; cada afirmação deve apontar para evidência ou ser reformulada.
-- [ ] Revisar resultados do benchmark separadamente da aprovação dos testes de software.
-- [ ] Preparar notas de migração para colunas, arquivos, regras de entrada e substituições GO.
-- [ ] Criar commits por entrega revisada, selecionando arquivos explicitamente. Publicação de pacote é uma ação posterior e separada.
+- [ ] Run `.venv/bin/python -m pytest -q` and `git diff --check`; require success.
+- [ ] Run the CLI with examples, without permutations, with permutations, without eligible terms and with an intentional GO error; check states and files for each run.
+- [ ] Test clean installation and the advertised minimum Python version as well as a modern version; update advertised support if the matrix cannot be met.
+- [ ] Review all text containing `rigorous`, `robust`, `confirmatory`, `artifact` or equivalents; each claim must point to evidence or be rephrased.
+- [ ] Review benchmark results separately from software test success.
+- [ ] Prepare migration notes for columns, files, input rules and GO replacements.
+- [ ] Create commits for each reviewed delivery, explicitly selecting files. Package publication is a later, separate action.
 
-**Aceite:** release descrito como exploratório, sem alegação de controle geral de FDR; limitações conhecidas não ficam ocultas por testes aprovados.
+**Acceptance:** the release is described as exploratory, without general FDR control claims; known limitations are not hidden by passing tests.
 
-## Ordem de execução e pontos de revisão
+## Execution Order and Review Checkpoints
 
-1. Tarefas 1–3: fechar contrato inferencial e diagnósticos.
-2. Tarefas 4–5: fechar GO e rastreabilidade.
-3. Tarefa 6: corrigir a interpretação do piloto antes de ampliar suas conclusões.
-4. Tarefa 7: executar validação em lotes com atualizações de progresso.
-5. Tarefa 8: executar comparações com dados e ambientes disponíveis.
-6. Tarefa 9: revisar o conjunto e preparar o release.
+1. Tasks 1–3: finalize inference contracts and diagnostics.
+2. Tasks 4–5: finalize GO handling and traceability.
+3. Task 6: correct pilot interpretation before expanding its conclusions.
+4. Task 7: run validation in batches with progress updates.
+5. Task 8: run comparisons using available data and environments.
+6. Task 9: review the complete work and prepare the release.
 
-A criação deste documento não implementa essas tarefas. Cada checkbox só deve ser marcado após código, testes e documentação correspondentes estarem verificados.
+Creating this document does not implement these tasks. Checkboxes must be marked only after the corresponding code, tests and documentation have been verified.
 
 ## Execution checkpoint
 

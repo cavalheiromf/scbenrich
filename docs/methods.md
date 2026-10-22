@@ -1,9 +1,9 @@
-# Contratos inferenciais
+# Inference contracts
 
-A unidade é a família. Fisher e a OR condicional às margens avaliam associação marginal; a permutação avalia a contagem anotada sob seleção permutável dentro dos estratos. BH é aplicado separadamente a cada conjunto de p-valores.
+The unit of analysis is the family. Fisher's test and the odds ratio conditional on the margins assess marginal association; the permutation test assesses the annotated count under exchangeable selection within strata. BH is applied separately to each set of p-values.
 
-`marginal_significant` e `stratified_significant` são decisões independentes. `balance_status` é descritivo e não seleciona descobertas. `analysis_status` distingue `ok`, `constant_statistic`, `no_randomization` e `not_run`.
+`marginal_significant` and `stratified_significant` are independent decisions. `balance_status` is descriptive and does not select discoveries. `analysis_status` distinguishes `ok`, `constant_statistic`, `no_randomization` and `not_run`.
 
-O suporte por termo é a soma dos limites hipergeométricos de cada estrato. Muitas seleções possíveis não garantem que a estatística de um termo varie. Uma estatística constante não produz descoberta.
+The support of each term's count is the sum of the hypergeometric bounds across strata. Many possible selections do not guarantee that a term's statistic varies. A constant statistic does not produce a discovery.
 
-`tail_ci_low` e `tail_ci_high` são intervalos binomiais para a probabilidade de excedência Monte Carlo. Não são intervalos do efeito biológico ou do p-valor ajustado. Os quantis em `balance_diagnostics.tsv` descrevem a distribuição das médias das covariáveis nas réplicas, sem garantir ausência de confundimento.
+`tail_ci_low` and `tail_ci_high` are binomial intervals for the Monte Carlo exceedance probability. They are not intervals for the biological effect or the adjusted p-value. The quantiles in `balance_diagnostics.tsv` describe the distribution of covariate means across resampled sets, without guaranteeing the absence of confounding.

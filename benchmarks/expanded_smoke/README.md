@@ -1,5 +1,5 @@
-# Ensaio funcional da validação ampliada
+# Functional smoke test of expanded validation
 
-Arquivos produzidos pelo comando de smoke test documentado em docs/benchmark-protocol.md. Cinco réplicas, 99 permutações, sete cenários, OR 1/4 e bins 2/4. Estes resultados verificam a execução e as métricas; não demonstram controle nominal de FDR. O manifesto preserva a configuração, hashes do código e versões do momento da execução. Os lotes, dados por termo e figuras desta execução estão em /tmp/scbenrich-expanded-smoke.
+These files were produced by the smoke-test command documented in docs/benchmark-protocol.md. The run used five replicates, 99 permutations, seven scenarios, OR 1/4 and bins 2/4. These results verify execution and metrics; they do not demonstrate nominal FDR control. The manifest preserves the configuration, code hashes and versions at execution time. Batches, term-level data and figures from this run are in /tmp/scbenrich-expanded-smoke.
 
-FDR usa bootstrap por réplica; intervalos iguais a zero em amostras pequenas não são limites superiores confiáveis. Cobertura usa IC binomial e é calculada apenas para a OR marginal conhecida no cenário unconfounded. Valores ausentes indicam métricas sem verdade conhecida ou sem efeito alternativo.
+FDR uses bootstrap resampling by replicate; intervals equal to zero in small samples are not reliable upper bounds. Coverage uses a binomial confidence interval and is calculated only for the known marginal OR in the unconfounded scenario. Missing values indicate metrics with unknown truth or no alternative effect.

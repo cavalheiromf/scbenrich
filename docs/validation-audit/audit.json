@@ -1,0 +1,219 @@
+{
+  "audited_at": "2026-10-22T17:50:33.683753+00:00",
+  "configuration": {
+    "batch_size": 5,
+    "bins": [
+      2,
+      4,
+      8
+    ],
+    "n_families": 240,
+    "odds_ratios": [
+      1,
+      2,
+      4
+    ],
+    "permutations": 9999,
+    "replicates": 1000,
+    "scenarios": [
+      "exact",
+      "continuous",
+      "missing_size",
+      "dependent",
+      "sparse",
+      "derived_degree",
+      "unconfounded"
+    ],
+    "seed": 42
+  },
+  "errors": [],
+  "checks": {
+    "source_hashes_match": {
+      "/home/mfcaval/github/scbenrich/benchmarks/expanded.py": true,
+      "/home/mfcaval/github/scbenrich/scbenrich/__init__.py": false,
+      "/home/mfcaval/github/scbenrich/scbenrich/cli.py": true,
+      "/home/mfcaval/github/scbenrich/scbenrich/core/__init__.py": true,
+      "/home/mfcaval/github/scbenrich/scbenrich/core/dag.py": true,
+      "/home/mfcaval/github/scbenrich/scbenrich/core/inference.py": true,
+      "/home/mfcaval/github/scbenrich/scbenrich/core/obo.py": true,
+      "/home/mfcaval/github/scbenrich/scbenrich/core/regression.py": true,
+      "/home/mfcaval/github/scbenrich/scbenrich/core/stats.py": true,
+      "/home/mfcaval/github/scbenrich/scbenrich/core/stratified.py": true,
+      "/home/mfcaval/github/scbenrich/scbenrich/utils/__init__.py": true,
+      "/home/mfcaval/github/scbenrich/scbenrich/utils/io.py": false,
+      "/home/mfcaval/github/scbenrich/scbenrich/utils/provenance.py": true,
+      "/home/mfcaval/github/scbenrich/scbenrich/utils/validation.py": true
+    },
+    "dependency_versions_match": {
+      "numpy": true,
+      "pandas": true,
+      "scipy": true
+    },
+    "historical_runner_fingerprint_present": false,
+    "validated_batches": 4200,
+    "metric_rows": 126000,
+    "term_rows": 450000,
+    "replicates_matches_reconstruction": true,
+    "terms_matches_reconstruction": true,
+    "summary_matches_reconstruction": true,
+    "calibration_matches_reconstruction": true,
+    "sampled_replays_match": 21
+  },
+  "replays": [
+    {
+      "scenario": "exact",
+      "odds_ratio": 1,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "exact",
+      "odds_ratio": 2,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "exact",
+      "odds_ratio": 4,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "continuous",
+      "odds_ratio": 1,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "continuous",
+      "odds_ratio": 2,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "continuous",
+      "odds_ratio": 4,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "missing_size",
+      "odds_ratio": 1,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "missing_size",
+      "odds_ratio": 2,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "missing_size",
+      "odds_ratio": 4,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "dependent",
+      "odds_ratio": 1,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "dependent",
+      "odds_ratio": 2,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "dependent",
+      "odds_ratio": 4,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "sparse",
+      "odds_ratio": 1,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "sparse",
+      "odds_ratio": 2,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "sparse",
+      "odds_ratio": 4,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "derived_degree",
+      "odds_ratio": 1,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "derived_degree",
+      "odds_ratio": 2,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "derived_degree",
+      "odds_ratio": 4,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "unconfounded",
+      "odds_ratio": 1,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "unconfounded",
+      "odds_ratio": 2,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    },
+    {
+      "scenario": "unconfounded",
+      "odds_ratio": 4,
+      "replicate": 0,
+      "bins": 2,
+      "matches": true
+    }
+  ],
+  "historical_provenance": "Consult per-file source checks: two package files differ from the recorded versions. Dependency versions and the numerical modules used by the benchmark match. Historical orchestration fingerprint is absent; structural consistency and sampled replay do not prove provenance of all historical tasks.",
+  "historical_sources_recovered_at_commit": "a98e4638a4ec061c09425aac675e51869d159f72",
+  "audited_output_hashes": {
+    "replicates.tsv": "bce48cf6c9fe1d89f811756588aadb05f3bff991959efdfcdd5bce2de222371f",
+    "terms.tsv": "f4f4e980aa79b221c0d29ffe021d5fb3df6011cf1e27a2d0e55873a9728f79cd",
+    "summary.tsv": "b88d425fa1f8ee3e813423af1a9808b71fe8c44cafb9eeafd67eaeb5ce60fc10",
+    "calibration.tsv": "9221074e1c024e469ca8cab1a8d56e9016524f40acb2119a1c7e58eadd7a44a3"
+  }
+}

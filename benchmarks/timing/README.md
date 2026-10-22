@@ -1,12 +1,12 @@
-# Custo da validação ampliada após otimização
+# Expanded validation runtime after optimization
 
-Medição em 2026-10-22: Python 3.12.12, 240 famílias, 9.999 permutações, sete cenários e bins 2/4/8. Foram executadas 21 análises por versão, com OR=1 e réplica 0.
+Measurement on 2026-10-22: Python 3.12.12, 240 families, 9,999 permutations, seven scenarios and bins 2/4/8. Each version ran 21 analyses, with OR=1 and replicate 0.
 
-A estimativa sequencial para as 63.000 análises da configuração completa caiu de **73.0 para 34.7 horas**, um ganho de **2.10×**. O tempo acumulado das análises caiu de 87.6 para 41.7 segundos.
+The sequential estimate for the full configuration of 63,000 analyses fell from **73.0 to 34.7 hours**, a **2.10×** speedup. Cumulative analysis time fell from 87.6 to 41.7 seconds.
 
-A contribuição dos estratos totalmente selecionados agora é pré-calculada; somente estratos com seleção parcial usam o gerador aleatório. A distribuição de amostragem sem reposição e o compartilhamento dos sorteios entre termos são preservados. A sequência para uma mesma semente pode mudar em relação à implementação anterior. Hashes do código diferenciam as execuções; checkpoints antigos exigem outra pasta.
+Contributions from fully selected strata are now precomputed; only partially selected strata use the random number generator. Sampling without replacement and shared draws across terms are preserved. The sequence for a given seed may change relative to the previous implementation. Code hashes distinguish runs; previous checkpoints require a separate directory.
 
-| Cenário | Bins | Antes (s) | Depois (s) | Fração de estratos informativos |
+| Scenario | Bins | Before (s) | After (s) | Fraction of informative strata |
 |---|---:|---:|---:|---:|
 | exact | 2 | 1.74 | 1.42 | 1.000 |
 | exact | 4 | 1.47 | 1.25 | 1.000 |
@@ -30,16 +30,16 @@ A contribuição dos estratos totalmente selecionados agora é pré-calculada; s
 | unconfounded | 4 | 1.41 | 1.21 | 1.000 |
 | unconfounded | 8 | 1.41 | 1.21 | 1.000 |
 
-Estimativas pontuais, sem intervalo de incerteza. OR=2/4, outras réplicas e carga da máquina podem alterar os tempos. Geração dos dados, checkpoints, agregação e relatórios ficam fora da extrapolação. Os testes ocorreram parcialmente em paralelo com a medição. Esta comparação mede o tempo computacional; a validação estatística completa (63.000 análises) foi subsequentemente executada e consolidada em `benchmark_results/validation/` (ver [protocolo de benchmark](../../docs/benchmark-protocol.md)).
+These are point estimates without uncertainty intervals. OR=2/4, other replicates and machine load may change runtimes. Data generation, checkpoints, aggregation and reports are excluded from the extrapolation. Tests ran partly in parallel with the measurement. This comparison measures computational runtime; the full statistical validation (63,000 analyses) was subsequently executed and consolidated in `benchmark_results/validation/` (see the [benchmark protocol](../../docs/benchmark-protocol.md)).
 
-Com oito bins, alguns cenários apresentam poucos estratos informativos, aspecto a examinar na análise de poder e suporte.
+With eight bins, some scenarios have few informative strata, which should be considered when assessing power and support.
 
-Verificação: 44 testes passaram, incluindo distribuição exata de um universo com seis pares possíveis, sorteios compartilhados entre termos duplicados e estratos com seleção fixa e variável.
+Verification: 44 tests passed, including the exact distribution of a small universe with six possible pairs, shared draws across duplicate terms, and strata with fixed and variable selection.
 
-Reprodução na raiz do repositório:
+Reproduce from the repository root:
 
 ```bash
 PYTHONPATH=. .venv/bin/python benchmarks/timing/measure.py
 ```
 
-`runtime.json` contém os novos tempos, configuração, versões e hashes; `baseline/runtime.json` preserva a medição anterior. `measurements.json` é atualizado após cada análise. Reexecutar substitui a medição atual.
+`runtime.json` contains the new timings, configuration, versions and hashes; `baseline/runtime.json` preserves the earlier measurement. `measurements.json` is updated after each analysis. Rerunning replaces the current measurement.

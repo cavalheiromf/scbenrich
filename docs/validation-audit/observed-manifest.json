@@ -1,0 +1,49 @@
+{
+  "config": {
+    "batch_size": 5,
+    "bins": [
+      2,
+      4,
+      8
+    ],
+    "n_families": 240,
+    "odds_ratios": [
+      1,
+      2,
+      4
+    ],
+    "permutations": 9999,
+    "replicates": 1000,
+    "scenarios": [
+      "exact",
+      "continuous",
+      "missing_size",
+      "dependent",
+      "sparse",
+      "derived_degree",
+      "unconfounded"
+    ],
+    "seed": 42
+  },
+  "source_hashes": {
+    "/home/mfcaval/github/scbenrich/benchmarks/expanded.py": "86337abd6e5eea14a2802fa2435fc72768dee0d12b643237c287d4910f735925",
+    "/home/mfcaval/github/scbenrich/scbenrich/__init__.py": "8d805928497678eac3d157ec07a97efc429298715a34ead3968102ed89ba43b8",
+    "/home/mfcaval/github/scbenrich/scbenrich/cli.py": "f3d9f9cdc8eae5d13cc2507c033de89eacf75600a3da8115ed66994adbfdfe2e",
+    "/home/mfcaval/github/scbenrich/scbenrich/core/__init__.py": "24e5872fd2ae6484e1a8791535c13ac7710aaf951856c596ccc632456a4da149",
+    "/home/mfcaval/github/scbenrich/scbenrich/core/dag.py": "cd259f5fa43fe4941db7b4226574d21526605b460d140b85e572cdd40a838d56",
+    "/home/mfcaval/github/scbenrich/scbenrich/core/inference.py": "964b642164ad1ed3257260ccc4c3b7a9d78323b0563527edbb8be52f31e74d31",
+    "/home/mfcaval/github/scbenrich/scbenrich/core/obo.py": "38c61b58de71056a486faeed7cfa7dbff4b94f3ce584213da42cf6ea39edefee",
+    "/home/mfcaval/github/scbenrich/scbenrich/core/regression.py": "d4c48f0926ae8dc9e98efdb20e88813629ae336075b6ed8f3aa5c82eccec59c6",
+    "/home/mfcaval/github/scbenrich/scbenrich/core/stats.py": "e318b554095a0523d82b03aaf9f791df4345a685ed9ddcc35882339faf227bf2",
+    "/home/mfcaval/github/scbenrich/scbenrich/core/stratified.py": "41e740db8df0df623976aab9bb8a815b2fb04025c29520f072451f82427b2d05",
+    "/home/mfcaval/github/scbenrich/scbenrich/utils/__init__.py": "3f5d1e66544ef895a0aa3b748002bda4b64f0c93b110b30ea0cc8e4178615387",
+    "/home/mfcaval/github/scbenrich/scbenrich/utils/io.py": "0550d7fcc8cb3beaba56e959738329ed15f2388cdaa4bc1b10e2bc0960571dfe",
+    "/home/mfcaval/github/scbenrich/scbenrich/utils/provenance.py": "123b18d6d0b16818a9d9e08f322a1d8a577098151cd2d2680387c338ede97d8a",
+    "/home/mfcaval/github/scbenrich/scbenrich/utils/validation.py": "2ddb01cdd6a5d54ec8835e518e2de1c97e2918aa02c8f1d2dfa8bf6a627a5fb0"
+  },
+  "versions": {
+    "numpy": "2.4.3",
+    "pandas": "3.0.1",
+    "scipy": "1.17.1"
+  }
+}

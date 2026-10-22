@@ -6,43 +6,48 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from benchmarks.parallel import prepare, collect
+from benchmarks.parallel import prepare, collect, validate_prepared
+from benchmarks.checkpoints import read_checkpoint, validate_checkpoint
 from benchmarks.expanded import run_validation, generate, evaluate, _seed
 
 
 def task_parameters(config, task_index, chunks_per_effect=4):
-    scenarios = config['scenarios']
-    odds_ratios = config['odds_ratios']
-    n_chunks = chunks_per_effect
-
-    chunk_idx = task_index % n_chunks
-    rem = task_index // n_chunks
-    or_idx = rem % len(odds_ratios)
-    scen_idx = rem // len(odds_ratios)
-
-    if not (0 <= scen_idx < len(scenarios)):
-        raise IndexError(f"Task index {task_index} out of range")
-
-    scenario = scenarios[scen_idx]
-    effect = odds_ratios[or_idx]
-
-    total_reps = config['replicates']
-    reps_per_chunk = (total_reps + n_chunks - 1) // n_chunks
-    start_rep = chunk_idx * reps_per_chunk
-    end_rep = min(total_reps, (chunk_idx + 1) * reps_per_chunk)
+    if isinstance(chunks_per_effect, bool) or not isinstance(chunks_per_effect, int) or chunks_per_effect < 1:
+        raise ValueError('chunks_per_effect must be a positive integer')
+    scenarios, effects = config['scenarios'], config['odds_ratios']
+    total = len(scenarios) * len(effects) * chunks_per_effect
+    if isinstance(task_index, bool) or not isinstance(task_index, int) or not 0 <= task_index < total:
+        raise IndexError('task index out of range')
+    chunk = task_index % chunks_per_effect
+    effect = effects[(task_index // chunks_per_effect) % len(effects)]
+    scenario = scenarios[task_index // (chunks_per_effect * len(effects))]
+    # Partition the global batch indices, never individual replicas. Empty chunks
+    # are valid when more tasks than batches are requested.
+    batch_size = config['batch_size']
+    batches = (config['replicates'] + batch_size - 1) // batch_size
+    start_rep = min(config['replicates'], (chunk * batches // chunks_per_effect) * batch_size)
+    end_rep = min(config['replicates'], ((chunk + 1) * batches // chunks_per_effect) * batch_size)
 
     return scenario, effect, start_rep, end_rep
 
 
 def run_slice(config, out_dir, scenario, effect, start_rep, end_rep):
+    validate_prepared(config, out_dir, scenario)
+    if scenario not in config['scenarios'] or effect not in config['odds_ratios']:
+        raise ValueError('scenario or effect outside prepared configuration')
+    batch_size = config['batch_size']
+    if (not 0 <= start_rep <= end_rep <= config['replicates'] or
+            (start_rep != config['replicates'] and start_rep % batch_size) or
+            (end_rep != config['replicates'] and end_rep % batch_size)):
+        raise ValueError('slice boundaries must align with complete batches')
     directory = Path(out_dir) / 'shards' / scenario
     directory.mkdir(parents=True, exist_ok=True)
-    batch_size = config['batch_size']
     tag = hashlib.sha256(str(effect).encode()).hexdigest()[:12]
 
     for start in range(start_rep, end_rep, batch_size):
         path = directory / f'batch_{scenario}_{tag}_{start:06d}.json'
         if path.exists():
+            read_checkpoint(path, config, scenario, effect, start)
             continue
         records, term_records = [], []
         rep_end = min(start + batch_size, end_rep)
@@ -74,6 +79,7 @@ def run_slice(config, out_dir, scenario, effect, start_rep, end_rep):
                         coverage=int(intervals.ci_low <= effect <= intervals.ci_high) if scenario == 'unconfounded' and method == 'fisher' else None
                     ))
         payload = json.loads(pd.Series({'replicates': records, 'terms': term_records}).to_json())
+        validate_checkpoint(payload, config, scenario, effect, start)
         temporary = path.with_suffix('.tmp')
         temporary.write_text(json.dumps(payload, allow_nan=False))
         temporary.replace(path)
@@ -100,6 +106,7 @@ def main():
                 parser.error('task requires a valid --index for scenarios')
             scenario = config['scenarios'][args.index]
             directory = Path(args.out_dir) / 'shards' / scenario
+            validate_prepared(config, args.out_dir, scenario)
             subset = dict(config, scenarios=[scenario])
             run_validation(subset, directory)
         else:
