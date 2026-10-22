@@ -26,6 +26,7 @@ MANIFEST
 htmlcov/
 .tox/
 .nox/
+.venv/
 
 .idea/
 .vscode/
@@ -34,3 +35,5 @@ htmlcov/
 
 *.log
 
+
+benchmark_results/

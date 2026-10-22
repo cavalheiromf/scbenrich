@@ -1,0 +1,31 @@
+name: Tests and packaging
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  python:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.8', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install build
+      - run: python -m build
+      - run: python -m pip install ./dist/*.whl pytest
+      - run: python -m pytest -q
+      - name: Verify installed wheel outside repository
+        working-directory: /tmp
+        run: |
+          python -I -c "import scbenrich; print(scbenrich.__file__)"
+          scb-enrich --help
+      - name: Functional benchmark smoke test
+        run: |
+          python -m benchmarks.simulate --replicates 1 --permutations 19 --bins 2 --out-dir /tmp/scbenrich-benchmark
