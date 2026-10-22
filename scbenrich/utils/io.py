@@ -139,36 +139,55 @@ def load_gene_to_family_mapping(mapping_source):
     return mapping
 
 
-def extract_gff3_covariates(gff_path, gene_to_family, agg_func="mean"):
+def _resolve_gff_files(gff_input):
     """
-    Extracts structural covariates (gene length, CDS length, exon count) from a GFF3/GTF file
-    and aggregates them by gene family.
-
-    Parameters
-    ----------
-    gff_path : str or Path
-        Path to GFF3 or GTF file (plain or gzip-compressed).
-    gene_to_family : dict, pd.Series, pd.DataFrame, str, or Path
-        Mapping from gene/transcript ID to Family_ID (e.g. from OrthoFinder).
-    agg_func : {"mean", "median"}, default "mean"
-        Aggregation function across genes in each family.
-
-    Returns
-    -------
-    pd.DataFrame
-        DataFrame indexed by Family_ID with columns:
-        - Mean_Gene_Length (or Median_Gene_Length)
-        - Mean_CDS_Length (or Median_CDS_Length)
-        - Mean_Exon_Count (or Median_Exon_Count)
+    Resolves gff_input into a list of (label, Path) pairs.
+    Supports:
+    - single path (str or Path)
+    - list/tuple/set of paths
+    - directory path (finds all .gff, .gff3, .gtf, and .gz variants)
+    - dict of {label/species: path}
     """
-    gff_path = Path(gff_path)
-    if not gff_path.exists():
-        raise FileNotFoundError(f"GFF file not found: {gff_path}")
+    files = []
+    if isinstance(gff_input, dict):
+        for label, p in gff_input.items():
+            path = Path(p)
+            if not path.exists():
+                raise FileNotFoundError(f"GFF file not found: {path}")
+            files.append((str(label), path))
+    elif isinstance(gff_input, (list, tuple, set)):
+        for p in gff_input:
+            path = Path(p)
+            if not path.exists():
+                raise FileNotFoundError(f"GFF file not found: {path}")
+            files.append((path.stem.replace(".gff3", "").replace(".gff", "").replace(".gtf", ""), path))
+    elif isinstance(gff_input, (str, Path)):
+        path = Path(gff_input)
+        if not path.exists():
+            raise FileNotFoundError(f"GFF path not found: {path}")
+        if path.is_dir():
+            patterns = ("*.gff", "*.gff3", "*.gtf", "*.gff.gz", "*.gff3.gz", "*.gtf.gz")
+            found = []
+            for pat in patterns:
+                found.extend(path.glob(pat))
+            found = sorted(set(found))
+            if not found:
+                raise FileNotFoundError(f"No GFF/GTF files found in directory: {path}")
+            for p in found:
+                label = p.name
+                for ext in (".gff3.gz", ".gff.gz", ".gtf.gz", ".gff3", ".gff", ".gtf"):
+                    if label.endswith(ext):
+                        label = label[:-len(ext)]
+                        break
+                files.append((label, p))
+        else:
+            files.append((path.stem.replace(".gff3", "").replace(".gff", "").replace(".gtf", ""), path))
+    else:
+        raise TypeError("gff_input must be a file path, directory path, list of paths, or dict")
+    return files
 
-    mapping = load_gene_to_family_mapping(gene_to_family)
-    if not mapping:
-        raise ValueError("gene_to_family mapping is empty")
 
+def _parse_gff_file(gff_path):
     def strip_prefix(s):
         if not s:
             return s
@@ -239,56 +258,110 @@ def extract_gff3_covariates(gff_path, gene_to_family, agg_func="mean"):
                     for p in clean_parent.split(","):
                         txs[strip_prefix(p.strip())]["cds_len"] += length
 
-    # Link genes to their transcripts
     gene_to_txs = defaultdict(list)
     for tid, tinfo in txs.items():
         if tinfo["gene"]:
             gene_to_txs[tinfo["gene"]].append(tinfo)
 
-    records = []
-    seen_genes = set()
-    for raw_gid, fam in mapping.items():
-        gid = strip_prefix(raw_gid)
-        if gid in seen_genes:
-            continue
-
-        if gid in genes or gid in gene_to_txs:
-            isoforms = gene_to_txs.get(gid, [])
-            g_len = genes.get(gid, max([t["len"] for t in isoforms], default=1))
-            cds_len = max([t["cds_len"] for t in isoforms], default=0)
-            exon_cnt = max([t["exon_cnt"] for t in isoforms], default=1)
-            records.append({
-                "Gene_ID": gid,
-                "Family_ID": fam,
-                "gene_length": g_len if g_len > 0 else 1,
-                "cds_length": cds_len,
-                "exon_count": exon_cnt if exon_cnt > 0 else 1,
-            })
-            seen_genes.add(gid)
-        elif gid in txs:
-            t = txs[gid]
+    features = {}
+    for gid in set(genes.keys()).union(set(gene_to_txs.keys())):
+        isoforms = gene_to_txs.get(gid, [])
+        g_len = genes.get(gid, max([t["len"] for t in isoforms], default=1))
+        cds_len = max([t["cds_len"] for t in isoforms], default=0)
+        exon_cnt = max([t["exon_cnt"] for t in isoforms], default=1)
+        features[gid] = {
+            "gene_length": g_len if g_len > 0 else 1,
+            "cds_length": cds_len,
+            "exon_count": exon_cnt if exon_cnt > 0 else 1,
+        }
+    for tid, t in txs.items():
+        if tid not in features:
             g_len = genes.get(t["gene"], t["len"])
-            records.append({
-                "Gene_ID": gid,
-                "Family_ID": fam,
+            features[tid] = {
                 "gene_length": g_len if g_len > 0 else 1,
                 "cds_length": t["cds_len"],
                 "exon_count": t["exon_cnt"] if t["exon_cnt"] > 0 else 1,
+            }
+    return features
+
+
+def extract_gff3_covariates(gff, gene_to_family, agg_func="mean", by_species=False):
+    """
+    Extracts structural covariates (gene length, CDS length, exon count) from one or multiple
+    GFF3/GTF files and aggregates them by gene family.
+
+    Parameters
+    ----------
+    gff : str, Path, list, tuple, set, or dict
+        Path to a GFF3/GTF file, list/tuple of file paths, directory containing GFF files,
+        or dict mapping species names to file paths.
+    gene_to_family : dict, pd.Series, pd.DataFrame, str, or Path
+        Mapping from gene/transcript ID to Family_ID (e.g. from OrthoFinder).
+    agg_func : {"mean", "median"}, default "mean"
+        Aggregation function across genes in each family.
+    by_species : bool, default False
+        If True and multiple species/GFF files are provided, also adds species-specific
+        covariates in addition to the pooled metrics.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame indexed by Family_ID with columns:
+        - Mean_Gene_Length (or Median_Gene_Length)
+        - Mean_CDS_Length (or Median_CDS_Length)
+        - Mean_Exon_Count (or Median_Exon_Count)
+        (Plus species-specific columns if by_species=True).
+    """
+    files = _resolve_gff_files(gff)
+    mapping = load_gene_to_family_mapping(gene_to_family)
+    if not mapping:
+        raise ValueError("gene_to_family mapping is empty")
+
+    records = []
+    seen_genes = set()
+    for label, file_path in files:
+        file_features = _parse_gff_file(file_path)
+        for gid, metrics in file_features.items():
+            fam = mapping.get(gid)
+            if not fam:
+                continue
+            if (gid, fam) in seen_genes:
+                continue
+            seen_genes.add((gid, fam))
+            records.append({
+                "Gene_ID": gid,
+                "Family_ID": fam,
+                "Species": label,
+                **metrics,
             })
-            seen_genes.add(gid)
 
     if not records:
-        raise ValueError("None of the gene IDs in gene_to_family were found in the GFF file")
+        raise ValueError("None of the gene IDs in gene_to_family were found in the provided GFF file(s)")
 
     df_genes = pd.DataFrame(records)
 
     agg = "median" if agg_func == "median" else "mean"
     prefix = "Median" if agg == "median" else "Mean"
+
     fam_df = df_genes.groupby("Family_ID")[["gene_length", "cds_length", "exon_count"]].agg(agg).rename(columns={
         "gene_length": f"{prefix}_Gene_Length",
         "cds_length": f"{prefix}_CDS_Length",
         "exon_count": f"{prefix}_Exon_Count",
     })
+
+    if by_species and df_genes["Species"].nunique() > 1:
+        sp_df = df_genes.pivot_table(
+            index="Family_ID",
+            columns="Species",
+            values=["gene_length", "cds_length", "exon_count"],
+            aggfunc=agg
+        )
+        sp_cols = []
+        for val_name, sp_name in sp_df.columns:
+            clean_val = val_name.replace("gene_length", "Gene_Length").replace("cds_length", "CDS_Length").replace("exon_count", "Exon_Count")
+            sp_cols.append(f"{prefix}_{clean_val}_{sp_name}")
+        sp_df.columns = sp_cols
+        fam_df = fam_df.join(sp_df, how="left")
 
     return fam_df
 
@@ -302,12 +375,13 @@ def build_master_table(
     gff3=None,
     gene_to_family=None,
     gff_agg="mean",
+    by_species=False,
     fill_gff_missing="median",
     output_path=None,
 ):
     """
     Constructs a validated master table for scb-enrich from gene counts, annotations, foreground data,
-    and optional GFF3 genomic features.
+    and optional GFF3 genomic features from one or multiple species.
 
     Parameters
     ----------
@@ -325,13 +399,15 @@ def build_master_table(
     covariates : list of str, optional
         Specific covariate columns to retain. If None, all numeric columns from gene_counts
         (plus Annotation_Degree and GFF3 features if computed) are kept.
-    gff3 : str or Path, optional
-        Path to GFF3 or GTF file for extracting structural covariates.
+    gff3 : str, Path, list, tuple, set, or dict, optional
+        Path to a GFF3/GTF file, list of files, directory containing GFFs, or dict of {species: path}.
     gene_to_family : dict, pd.Series, pd.DataFrame, str, or Path, optional
         Mapping from gene IDs to Family_ID (e.g. OrthoFinder Orthogroups.tsv / Orthogroups.txt).
         Required if gff3 is provided.
     gff_agg : {"mean", "median"}, default "mean"
         Aggregation function across genes in each family for GFF features.
+    by_species : bool, default False
+        If True and multiple species GFFs are provided, adds species-specific structural covariates.
     fill_gff_missing : {"median", "mean", float}, default "median"
         Strategy to fill structural covariates for families not present in the GFF file.
     output_path : str or Path, optional
@@ -412,7 +488,7 @@ def build_master_table(
     if gff3 is not None:
         if gene_to_family is None:
             raise ValueError("Extracting covariates from GFF3 requires gene_to_family mapping")
-        df_gff = extract_gff3_covariates(gff3, gene_to_family, agg_func=gff_agg)
+        df_gff = extract_gff3_covariates(gff3, gene_to_family, agg_func=gff_agg, by_species=by_species)
         for c in df_gff.columns:
             if c in df.columns:
                 df = df.drop(columns=[c])
@@ -420,9 +496,9 @@ def build_master_table(
         for c in df_gff.columns:
             if df[c].isna().any():
                 if fill_gff_missing == "median":
-                    fill_val = float(df_gff[c].median()) if len(df_gff) > 0 else 0.0
+                    fill_val = float(df_gff[c].median()) if len(df_gff) > 0 and pd.notna(df_gff[c].median()) else 0.0
                 elif fill_gff_missing == "mean":
-                    fill_val = float(df_gff[c].mean()) if len(df_gff) > 0 else 0.0
+                    fill_val = float(df_gff[c].mean()) if len(df_gff) > 0 and pd.notna(df_gff[c].mean()) else 0.0
                 else:
                     fill_val = float(fill_gff_missing)
                 df[c] = df[c].fillna(fill_val)

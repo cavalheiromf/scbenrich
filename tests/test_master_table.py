@@ -190,3 +190,66 @@ def test_extract_gff3_covariates_and_integration(tmp_path):
     # OG_MISSING gets filled with median
     assert master.loc["OG_MISSING", "Mean_Gene_Length"] == 1251.0
 
+
+def test_extract_gff3_multiple_files_and_directory(tmp_path):
+    from scbenrich import extract_gff3_covariates, build_master_table
+
+    gff_dir = tmp_path / "gffs"
+    gff_dir.mkdir()
+
+    sp1_file = gff_dir / "sp1.gff3"
+    sp1_file.write_text(
+        "##gff-version 3\n"
+        "chr1\tsrc\tgene\t1000\t2000\t.\t+\t.\tID=sp1_g1\n"
+        "chr1\tsrc\tmRNA\t1000\t2000\t.\t+\t.\tID=sp1_g1.1;Parent=sp1_g1\n"
+        "chr1\tsrc\texon\t1000\t2000\t.\t+\t.\tParent=sp1_g1.1\n"
+        "chr1\tsrc\tCDS\t1100\t1900\t.\t+\t0\tParent=sp1_g1.1\n"
+    )
+
+    sp2_file = gff_dir / "sp2.gff3"
+    sp2_file.write_text(
+        "##gff-version 3\n"
+        "chr1\tsrc\tgene\t3000\t5000\t.\t+\t.\tID=sp2_g1\n"
+        "chr1\tsrc\tmRNA\t3000\t5000\t.\t+\t.\tID=sp2_g1.1;Parent=sp2_g1\n"
+        "chr1\tsrc\texon\t3000\t3500\t.\t+\t.\tParent=sp2_g1.1\n"
+        "chr1\tsrc\tCDS\t3100\t3500\t.\t+\t0\tParent=sp2_g1.1\n"
+        "chr1\tsrc\texon\t4000\t5000\t.\t+\t.\tParent=sp2_g1.1\n"
+        "chr1\tsrc\tCDS\t4000\t4800\t.\t+\t0\tParent=sp2_g1.1\n"
+    )
+
+    mapping = {"sp1_g1": "OG1", "sp2_g1": "OG1"}
+
+    # 1. Test passing a directory
+    covs_dir = extract_gff3_covariates(gff_dir, mapping)
+    assert "OG1" in covs_dir.index
+    # sp1_g1: len=1001, cds=801, exon=1
+    # sp2_g1: len=2001, cds=1202, exon=2
+    # pooled mean len: 1501.0, mean exon: 1.5
+    assert covs_dir.loc["OG1", "Mean_Gene_Length"] == 1501.0
+    assert covs_dir.loc["OG1", "Mean_Exon_Count"] == 1.5
+
+    # 2. Test passing a list of files with by_species=True
+    covs_list = extract_gff3_covariates([sp1_file, sp2_file], mapping, by_species=True)
+    assert covs_list.loc["OG1", "Mean_Gene_Length"] == 1501.0
+    assert "Mean_Gene_Length_sp1" in covs_list.columns
+    assert "Mean_Gene_Length_sp2" in covs_list.columns
+    assert covs_list.loc["OG1", "Mean_Gene_Length_sp1"] == 1001.0
+    assert covs_list.loc["OG1", "Mean_Gene_Length_sp2"] == 2001.0
+
+    # 3. Test passing a dict
+    covs_dict = extract_gff3_covariates({"Arabidopsis": sp1_file, "Populus": sp2_file}, mapping, by_species=True)
+    assert "Mean_Gene_Length_Arabidopsis" in covs_dict.columns
+    assert "Mean_Gene_Length_Populus" in covs_dict.columns
+
+    # 4. Test build_master_table with directory of GFFs
+    counts_df = pd.DataFrame({"Family_ID": ["OG1"], "Total_Count": [2]})
+    master = build_master_table(
+        gene_counts=counts_df,
+        gff3=gff_dir,
+        gene_to_family=mapping,
+        by_species=True,
+    )
+    assert master.loc["OG1", "Mean_Gene_Length"] == 1501.0
+    assert "Mean_Gene_Length_sp1" in master.columns
+
+
