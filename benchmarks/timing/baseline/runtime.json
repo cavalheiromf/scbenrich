@@ -1,0 +1,183 @@
+{
+  "config": {
+    "seed": 42,
+    "replicates": 1000,
+    "permutations": 9999,
+    "n_families": 240,
+    "bins": [
+      2,
+      4,
+      8
+    ],
+    "odds_ratios": [
+      1,
+      2,
+      4
+    ],
+    "scenarios": [
+      "exact",
+      "continuous",
+      "missing_size",
+      "dependent",
+      "sparse",
+      "derived_degree",
+      "unconfounded"
+    ],
+    "batch_size": 50
+  },
+  "measurement_effect": 1,
+  "replicate": 0,
+  "measurements": [
+    {
+      "scenario": "exact",
+      "bins": 2,
+      "seconds": 1.7357250452041626,
+      "informative_strata_fraction": 1.0
+    },
+    {
+      "scenario": "exact",
+      "bins": 4,
+      "seconds": 1.4656632244586945,
+      "informative_strata_fraction": 1.0
+    },
+    {
+      "scenario": "exact",
+      "bins": 8,
+      "seconds": 1.4621224850416183,
+      "informative_strata_fraction": 1.0
+    },
+    {
+      "scenario": "continuous",
+      "bins": 2,
+      "seconds": 1.4576386064291,
+      "informative_strata_fraction": 1.0
+    },
+    {
+      "scenario": "continuous",
+      "bins": 4,
+      "seconds": 5.816298998892307,
+      "informative_strata_fraction": 0.6031746031746031
+    },
+    {
+      "scenario": "continuous",
+      "bins": 8,
+      "seconds": 10.817579321563244,
+      "informative_strata_fraction": 0.09278350515463918
+    },
+    {
+      "scenario": "missing_size",
+      "bins": 2,
+      "seconds": 1.4334185719490051,
+      "informative_strata_fraction": 1.0
+    },
+    {
+      "scenario": "missing_size",
+      "bins": 4,
+      "seconds": 5.828644149005413,
+      "informative_strata_fraction": 0.6190476190476191
+    },
+    {
+      "scenario": "missing_size",
+      "bins": 8,
+      "seconds": 10.237305760383606,
+      "informative_strata_fraction": 0.10152284263959391
+    },
+    {
+      "scenario": "dependent",
+      "bins": 2,
+      "seconds": 1.5080541148781776,
+      "informative_strata_fraction": 1.0
+    },
+    {
+      "scenario": "dependent",
+      "bins": 4,
+      "seconds": 1.5474473014473915,
+      "informative_strata_fraction": 1.0
+    },
+    {
+      "scenario": "dependent",
+      "bins": 8,
+      "seconds": 1.5976918786764145,
+      "informative_strata_fraction": 1.0
+    },
+    {
+      "scenario": "sparse",
+      "bins": 2,
+      "seconds": 1.4898326843976974,
+      "informative_strata_fraction": 0.75
+    },
+    {
+      "scenario": "sparse",
+      "bins": 4,
+      "seconds": 6.199280224740505,
+      "informative_strata_fraction": 0.3333333333333333
+    },
+    {
+      "scenario": "sparse",
+      "bins": 8,
+      "seconds": 13.533915542066097,
+      "informative_strata_fraction": 0.03664921465968586
+    },
+    {
+      "scenario": "derived_degree",
+      "bins": 2,
+      "seconds": 1.444494053721428,
+      "informative_strata_fraction": 1.0
+    },
+    {
+      "scenario": "derived_degree",
+      "bins": 4,
+      "seconds": 5.812734834849834,
+      "informative_strata_fraction": 0.6551724137931034
+    },
+    {
+      "scenario": "derived_degree",
+      "bins": 8,
+      "seconds": 9.996773235499859,
+      "informative_strata_fraction": 0.2185430463576159
+    },
+    {
+      "scenario": "unconfounded",
+      "bins": 2,
+      "seconds": 1.4131261706352234,
+      "informative_strata_fraction": 1.0
+    },
+    {
+      "scenario": "unconfounded",
+      "bins": 4,
+      "seconds": 1.413144625723362,
+      "informative_strata_fraction": 1.0
+    },
+    {
+      "scenario": "unconfounded",
+      "bins": 8,
+      "seconds": 1.4078937619924545,
+      "informative_strata_fraction": 1.0
+    }
+  ],
+  "elapsed_seconds": 87.74977906793356,
+  "estimated_compute_hours": 73.01565382629633,
+  "python": "3.12.12",
+  "platform": "Linux-4.18.0-372.9.1.el8.x86_64-x86_64-with-glibc2.28",
+  "versions": {
+    "numpy": "2.4.3",
+    "pandas": "3.0.1",
+    "scipy": "1.17.1"
+  },
+  "source_hashes": {
+    "benchmarks/expanded.py": "86337abd6e5eea14a2802fa2435fc72768dee0d12b643237c287d4910f735925",
+    "scbenrich/__init__.py": "8d805928497678eac3d157ec07a97efc429298715a34ead3968102ed89ba43b8",
+    "scbenrich/cli.py": "f3d9f9cdc8eae5d13cc2507c033de89eacf75600a3da8115ed66994adbfdfe2e",
+    "scbenrich/core/__init__.py": "24e5872fd2ae6484e1a8791535c13ac7710aaf951856c596ccc632456a4da149",
+    "scbenrich/core/dag.py": "cd259f5fa43fe4941db7b4226574d21526605b460d140b85e572cdd40a838d56",
+    "scbenrich/core/inference.py": "964b642164ad1ed3257260ccc4c3b7a9d78323b0563527edbb8be52f31e74d31",
+    "scbenrich/core/obo.py": "38c61b58de71056a486faeed7cfa7dbff4b94f3ce584213da42cf6ea39edefee",
+    "scbenrich/core/regression.py": "d4c48f0926ae8dc9e98efdb20e88813629ae336075b6ed8f3aa5c82eccec59c6",
+    "scbenrich/core/stats.py": "e318b554095a0523d82b03aaf9f791df4345a685ed9ddcc35882339faf227bf2",
+    "scbenrich/core/stratified.py": "e8a57f5ea45bbaa2a2d8fb3df82827f80b7c485fb395560cf155b668624bb6e4",
+    "scbenrich/utils/__init__.py": "3f5d1e66544ef895a0aa3b748002bda4b64f0c93b110b30ea0cc8e4178615387",
+    "scbenrich/utils/io.py": "0550d7fcc8cb3beaba56e959738329ed15f2388cdaa4bc1b10e2bc0960571dfe",
+    "scbenrich/utils/provenance.py": "123b18d6d0b16818a9d9e08f322a1d8a577098151cd2d2680387c338ede97d8a",
+    "scbenrich/utils/validation.py": "2ddb01cdd6a5d54ec8835e518e2de1c97e2918aa02c8f1d2dfa8bf6a627a5fb0"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "replicates": 30,
+  "permutations": 199,
+  "bins": [
+    2,
+    4,
+    8
+  ],
+  "seed": 42,
+  "n_families": 120,
+  "n_null_terms": 8,
+  "log_or": 1.5
+}

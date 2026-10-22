@@ -1,0 +1,57 @@
+scenario	odds_ratio	bins	method	replicates	informative_strata_fraction	fdr	fdr_n	fdr_ci_low	fdr_ci_high	power	power_n	power_ci_low	power_ci_high	coverage	coverage_n	coverage_ci_low	coverage_ci_high	no_randomization_rate
+continuous	1	2	fisher	5	1.0	0.0	5	0.0	0.0		0				0			0.0
+continuous	1	2	stratified	5	1.0	0.0	5	0.0	0.0		0				0			0.0
+continuous	1	4	fisher	5	0.38783361416	0.0	5	0.0	0.0		0				0			0.0
+continuous	1	4	stratified	5	0.38783361416	0.0	5	0.0	0.0		0				0			0.0
+continuous	4	2	fisher	5	0.975	0.0	5	0.0	0.0	0.8	5	0.28358206388191054	0.9949492366205319		0			0.0
+continuous	4	2	stratified	5	0.975	0.0	5	0.0	0.0	0.0	5	0.0	0.5218237501049814		0			0.0
+continuous	4	4	fisher	5	0.37988356014	0.0	5	0.0	0.0	0.8	5	0.28358206388191054	0.9949492366205319		0			0.0
+continuous	4	4	stratified	5	0.37988356014	0.0	5	0.0	0.0	0.0	5	0.0	0.5218237501049814		0			0.0
+dependent	1	2	fisher	5	0.975	0.0	5	0.0	0.0		0				0			0.0
+dependent	1	2	stratified	5	0.975	0.0	5	0.0	0.0		0				0			0.0
+dependent	1	4	fisher	5	0.975	0.0	5	0.0	0.0		0				0			0.0
+dependent	1	4	stratified	5	0.975	0.0	5	0.0	0.0		0				0			0.0
+dependent	4	2	fisher	5	0.975	0.0	5	0.0	0.0	1.0	5	0.47817624989501856	1.0		0			0.0
+dependent	4	2	stratified	5	0.975	0.0	5	0.0	0.0	0.0	5	0.0	0.5218237501049814		0			0.0
+dependent	4	4	fisher	5	0.975	0.0	5	0.0	0.0	1.0	5	0.47817624989501856	1.0		0			0.0
+dependent	4	4	stratified	5	0.975	0.0	5	0.0	0.0	0.0	5	0.0	0.5218237501049814		0			0.0
+derived_degree	1	2	fisher	5	0.975	0.0	5	0.0	0.0		0				0			0.0
+derived_degree	1	2	stratified	5	0.975		0				0				0			0.0
+derived_degree	1	4	fisher	5	0.4403968682	0.0	5	0.0	0.0		0				0			0.0
+derived_degree	1	4	stratified	5	0.4403968682		0				0				0			0.0
+derived_degree	4	2	fisher	5	0.975	0.0	5	0.0	0.0	0.8	5	0.28358206388191054	0.9949492366205319		0			0.0
+derived_degree	4	2	stratified	5	0.975		0				0				0			0.0
+derived_degree	4	4	fisher	5	0.41454270596000004	0.0	5	0.0	0.0	0.8	5	0.28358206388191054	0.9949492366205319		0			0.0
+derived_degree	4	4	stratified	5	0.41454270596000004		0				0				0			0.0
+exact	1	2	fisher	5	0.925	0.0	5	0.0	0.0		0				0			0.0
+exact	1	2	stratified	5	0.925	0.0	5	0.0	0.0		0				0			0.0
+exact	1	4	fisher	5	0.925	0.0	5	0.0	0.0		0				0			0.0
+exact	1	4	stratified	5	0.925	0.0	5	0.0	0.0		0				0			0.0
+exact	4	2	fisher	5	0.95	0.0	5	0.0	0.0	1.0	5	0.47817624989501856	1.0		0			0.0
+exact	4	2	stratified	5	0.95	0.0	5	0.0	0.0	0.0	5	0.0	0.5218237501049814		0			0.0
+exact	4	4	fisher	5	0.95	0.0	5	0.0	0.0	1.0	5	0.47817624989501856	1.0		0			0.0
+exact	4	4	stratified	5	0.95	0.0	5	0.0	0.0	0.0	5	0.0	0.5218237501049814		0			0.0
+missing_size	1	2	fisher	5	1.0		0				0				0			0.0
+missing_size	1	2	stratified	5	1.0	0.0	5	0.0	0.0		0				0			0.0
+missing_size	1	4	fisher	5	0.36359851862000003		0				0				0			0.0
+missing_size	1	4	stratified	5	0.36359851862000003	0.0	5	0.0	0.0		0				0			0.0
+missing_size	4	2	fisher	5	1.0		0				0				0			0.0
+missing_size	4	2	stratified	5	1.0	0.0	5	0.0	0.0	0.0	5	0.0	0.5218237501049814		0			0.0
+missing_size	4	4	fisher	5	0.38708321606		0				0				0			0.0
+missing_size	4	4	stratified	5	0.38708321606	0.0	5	0.0	0.0	0.0	5	0.0	0.5218237501049814		0			0.0
+sparse	1	2	fisher	5	0.725	0.0	5	0.0	0.0		0				0			0.0
+sparse	1	2	stratified	5	0.725	0.0	5	0.0	0.0		0				0			0.0
+sparse	1	4	fisher	5	0.16234671422	0.0	5	0.0	0.0		0				0			0.0
+sparse	1	4	stratified	5	0.16234671422	0.0	5	0.0	0.0		0				0			0.0
+sparse	4	2	fisher	5	0.775	0.0	5	0.0	0.0	1.0	5	0.47817624989501856	1.0		0			0.0
+sparse	4	2	stratified	5	0.775	0.2	5	0.0	0.4	0.4	5	0.05274495052631566	0.8533672003653274		0			0.0
+sparse	4	4	fisher	5	0.14191692016	0.0	5	0.0	0.0	1.0	5	0.47817624989501856	1.0		0			0.0
+sparse	4	4	stratified	5	0.14191692016	0.0	5	0.0	0.0	0.0	5	0.0	0.5218237501049814		0			0.0
+unconfounded	1	2	fisher	5	1.0	0.0	5	0.0	0.0		0			1.0	5	0.47817624989501856	1.0	0.0
+unconfounded	1	2	stratified	5	1.0	0.0	5	0.0	0.0		0				0			0.0
+unconfounded	1	4	fisher	5	1.0	0.0	5	0.0	0.0		0			1.0	5	0.47817624989501856	1.0	0.0
+unconfounded	1	4	stratified	5	1.0	0.0	5	0.0	0.0		0				0			0.0
+unconfounded	4	2	fisher	5	1.0	0.0	5	0.0	0.0	0.0	5	0.0	0.5218237501049814	1.0	5	0.47817624989501856	1.0	0.0
+unconfounded	4	2	stratified	5	1.0	0.0	5	0.0	0.0	0.0	5	0.0	0.5218237501049814		0			0.0
+unconfounded	4	4	fisher	5	1.0	0.0	5	0.0	0.0	0.0	5	0.0	0.5218237501049814	1.0	5	0.47817624989501856	1.0	0.0
+unconfounded	4	4	stratified	5	1.0	0.0	5	0.0	0.0	0.0	5	0.0	0.5218237501049814		0			0.0

@@ -1,0 +1,128 @@
+[
+  {
+    "scenario": "exact",
+    "bins": 2,
+    "seconds": 1.4158221557736397,
+    "informative_strata_fraction": 1.0
+  },
+  {
+    "scenario": "exact",
+    "bins": 4,
+    "seconds": 1.246348388493061,
+    "informative_strata_fraction": 1.0
+  },
+  {
+    "scenario": "exact",
+    "bins": 8,
+    "seconds": 1.248748280107975,
+    "informative_strata_fraction": 1.0
+  },
+  {
+    "scenario": "continuous",
+    "bins": 2,
+    "seconds": 1.220891885459423,
+    "informative_strata_fraction": 1.0
+  },
+  {
+    "scenario": "continuous",
+    "bins": 4,
+    "seconds": 4.165284842252731,
+    "informative_strata_fraction": 0.6031746031746031
+  },
+  {
+    "scenario": "continuous",
+    "bins": 8,
+    "seconds": 2.160699851810932,
+    "informative_strata_fraction": 0.09278350515463918
+  },
+  {
+    "scenario": "missing_size",
+    "bins": 2,
+    "seconds": 1.1963250860571861,
+    "informative_strata_fraction": 1.0
+  },
+  {
+    "scenario": "missing_size",
+    "bins": 4,
+    "seconds": 4.2556861117482185,
+    "informative_strata_fraction": 0.6190476190476191
+  },
+  {
+    "scenario": "missing_size",
+    "bins": 8,
+    "seconds": 3.276823967695236,
+    "informative_strata_fraction": 0.10152284263959391
+  },
+  {
+    "scenario": "dependent",
+    "bins": 2,
+    "seconds": 1.3024652376770973,
+    "informative_strata_fraction": 1.0
+  },
+  {
+    "scenario": "dependent",
+    "bins": 4,
+    "seconds": 1.3021845892071724,
+    "informative_strata_fraction": 1.0
+  },
+  {
+    "scenario": "dependent",
+    "bins": 8,
+    "seconds": 1.301840640604496,
+    "informative_strata_fraction": 1.0
+  },
+  {
+    "scenario": "sparse",
+    "bins": 2,
+    "seconds": 1.0822638720273972,
+    "informative_strata_fraction": 0.75
+  },
+  {
+    "scenario": "sparse",
+    "bins": 4,
+    "seconds": 2.5309081822633743,
+    "informative_strata_fraction": 0.3333333333333333
+  },
+  {
+    "scenario": "sparse",
+    "bins": 8,
+    "seconds": 1.0905706956982613,
+    "informative_strata_fraction": 0.03664921465968586
+  },
+  {
+    "scenario": "derived_degree",
+    "bins": 2,
+    "seconds": 1.241964377462864,
+    "informative_strata_fraction": 1.0
+  },
+  {
+    "scenario": "derived_degree",
+    "bins": 4,
+    "seconds": 4.246974542737007,
+    "informative_strata_fraction": 0.6551724137931034
+  },
+  {
+    "scenario": "derived_degree",
+    "bins": 8,
+    "seconds": 3.765189565718174,
+    "informative_strata_fraction": 0.2185430463576159
+  },
+  {
+    "scenario": "unconfounded",
+    "bins": 2,
+    "seconds": 1.212038792669773,
+    "informative_strata_fraction": 1.0
+  },
+  {
+    "scenario": "unconfounded",
+    "bins": 4,
+    "seconds": 1.2091066464781761,
+    "informative_strata_fraction": 1.0
+  },
+  {
+    "scenario": "unconfounded",
+    "bins": 8,
+    "seconds": 1.2124022394418716,
+    "informative_strata_fraction": 1.0
+  }
+]

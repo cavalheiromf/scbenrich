@@ -1,0 +1,10 @@
+{
+  "seed": 42,
+  "replicates": 5,
+  "permutations": 99,
+  "n_families": 120,
+  "bins": [2, 4],
+  "odds_ratios": [1, 4],
+  "scenarios": ["exact", "continuous", "missing_size", "dependent", "sparse", "derived_degree", "unconfounded"],
+  "batch_size": 5
+}

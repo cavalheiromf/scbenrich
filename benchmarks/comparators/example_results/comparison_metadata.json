@@ -1,0 +1,82 @@
+{
+  "unit": "family",
+  "propagation": "precomputed is_a/part_of; no GOATOOLS propagation",
+  "go_version": "releases/2026-test",
+  "bh_scope": "common retained terms across categories",
+  "foreground_column": "is_expanded",
+  "min_count": 2,
+  "max_fraction": 0.95,
+  "python_versions": {
+    "scbenrich": "0.1.0",
+    "numpy": "2.4.3",
+    "pandas": "3.0.1",
+    "scipy": "1.17.1"
+  },
+  "adapter_hashes": {
+    "run.py": "7602eeee55e9df2d41f69c09c8a23c7fb9bd9e670e1d00ff6fa7c79c01cc9645",
+    "run_r.R": "58fdc3169fb4ced39f34127e6e63e3af37c1eefc4e2c4b83af178d5b1e87b157"
+  },
+  "tools": {
+    "goatools": {
+      "status": "completed",
+      "version": "1.6.4",
+      "alternative": "two-sided",
+      "all_counts_match": true,
+      "all_p_match": true
+    },
+    "topgo_classic": {
+      "status": "completed",
+      "alternative": "greater",
+      "all_counts_match": true,
+      "all_p_match": true,
+      "p_equality_expected": true
+    },
+    "topgo_elim": {
+      "status": "completed",
+      "alternative": "greater",
+      "all_counts_match": true,
+      "all_p_match": false,
+      "p_equality_expected": false
+    },
+    "clusterprofiler": {
+      "status": "completed",
+      "alternative": "greater",
+      "all_counts_match": true,
+      "all_p_match": true,
+      "p_equality_expected": true
+    }
+  },
+  "inputs": {
+    "master": "19a95193105c56d87b5cd6c875c1241c842f39d27e22b0607f679eeef4fb755e",
+    "annotations": "3fd2770ea93c40ca9ae01f32f80c4bdaba27553fa14f5eec3fa20e53107a89f5",
+    "obo": "a9271efd87330a49486c71c0f1638e37f9700b20d8fcbb6e66fbc824fc479364"
+  },
+  "r_versions": [
+    {
+      "package": "R",
+      "version": "4.5.1"
+    },
+    {
+      "package": "topGO",
+      "version": "2.62.0"
+    },
+    {
+      "package": "GO.db",
+      "version": "3.22.0"
+    },
+    {
+      "package": "clusterProfiler",
+      "version": "4.18.4"
+    },
+    {
+      "package": "DOSE",
+      "version": "4.4.0"
+    }
+  ],
+  "export_hashes": {
+    "universe.txt": "89bdf96ba26182333ba9a35e4d8095611e67b1989ead6a34eb176a5f657bb0c9",
+    "foreground.txt": "ece199f75ea19d8b9588e96093051574a8cac391bf58b2f63c9293086c875a3b",
+    "matrix.tsv": "1feb7bd565e14842404b1cfb5accf5d7bbdea7dd6abf348e4515cacb2a490c9a",
+    "term2family.tsv": "90824302811bacc77e4878f9b47857cfbab01e7156ace443bf2c03707f9b2c95"
+  }
+}

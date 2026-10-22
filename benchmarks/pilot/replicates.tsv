@@ -1,0 +1,721 @@
+scenario	replicate	bins	method	discoveries	false_discoveries	any_false_discovery	false_discovery_proportion	power	ci_coverage
+simple_null	0	2	fisher	0	0	0	0.0		
+simple_null	0	2	stratified	0	0	0	0.0		
+simple_null	0	4	fisher	0	0	0	0.0		
+simple_null	0	4	stratified	0	0	0	0.0		
+simple_null	0	8	fisher	0	0	0	0.0		
+simple_null	0	8	stratified	0	0	0	0.0		
+simple_null	1	2	fisher	0	0	0	0.0		
+simple_null	1	2	stratified	0	0	0	0.0		
+simple_null	1	4	fisher	0	0	0	0.0		
+simple_null	1	4	stratified	0	0	0	0.0		
+simple_null	1	8	fisher	0	0	0	0.0		
+simple_null	1	8	stratified	0	0	0	0.0		
+simple_null	2	2	fisher	0	0	0	0.0		
+simple_null	2	2	stratified	0	0	0	0.0		
+simple_null	2	4	fisher	0	0	0	0.0		
+simple_null	2	4	stratified	0	0	0	0.0		
+simple_null	2	8	fisher	0	0	0	0.0		
+simple_null	2	8	stratified	0	0	0	0.0		
+simple_null	3	2	fisher	0	0	0	0.0		
+simple_null	3	2	stratified	0	0	0	0.0		
+simple_null	3	4	fisher	0	0	0	0.0		
+simple_null	3	4	stratified	0	0	0	0.0		
+simple_null	3	8	fisher	0	0	0	0.0		
+simple_null	3	8	stratified	0	0	0	0.0		
+simple_null	4	2	fisher	0	0	0	0.0		
+simple_null	4	2	stratified	0	0	0	0.0		
+simple_null	4	4	fisher	0	0	0	0.0		
+simple_null	4	4	stratified	0	0	0	0.0		
+simple_null	4	8	fisher	0	0	0	0.0		
+simple_null	4	8	stratified	0	0	0	0.0		
+simple_null	5	2	fisher	0	0	0	0.0		
+simple_null	5	2	stratified	0	0	0	0.0		
+simple_null	5	4	fisher	0	0	0	0.0		
+simple_null	5	4	stratified	0	0	0	0.0		
+simple_null	5	8	fisher	0	0	0	0.0		
+simple_null	5	8	stratified	0	0	0	0.0		
+simple_null	6	2	fisher	0	0	0	0.0		
+simple_null	6	2	stratified	0	0	0	0.0		
+simple_null	6	4	fisher	0	0	0	0.0		
+simple_null	6	4	stratified	0	0	0	0.0		
+simple_null	6	8	fisher	0	0	0	0.0		
+simple_null	6	8	stratified	0	0	0	0.0		
+simple_null	7	2	fisher	0	0	0	0.0		
+simple_null	7	2	stratified	0	0	0	0.0		
+simple_null	7	4	fisher	0	0	0	0.0		
+simple_null	7	4	stratified	0	0	0	0.0		
+simple_null	7	8	fisher	0	0	0	0.0		
+simple_null	7	8	stratified	0	0	0	0.0		
+simple_null	8	2	fisher	0	0	0	0.0		
+simple_null	8	2	stratified	0	0	0	0.0		
+simple_null	8	4	fisher	0	0	0	0.0		
+simple_null	8	4	stratified	0	0	0	0.0		
+simple_null	8	8	fisher	0	0	0	0.0		
+simple_null	8	8	stratified	0	0	0	0.0		
+simple_null	9	2	fisher	0	0	0	0.0		
+simple_null	9	2	stratified	0	0	0	0.0		
+simple_null	9	4	fisher	0	0	0	0.0		
+simple_null	9	4	stratified	0	0	0	0.0		
+simple_null	9	8	fisher	0	0	0	0.0		
+simple_null	9	8	stratified	0	0	0	0.0		
+simple_null	10	2	fisher	0	0	0	0.0		
+simple_null	10	2	stratified	0	0	0	0.0		
+simple_null	10	4	fisher	0	0	0	0.0		
+simple_null	10	4	stratified	0	0	0	0.0		
+simple_null	10	8	fisher	0	0	0	0.0		
+simple_null	10	8	stratified	0	0	0	0.0		
+simple_null	11	2	fisher	0	0	0	0.0		
+simple_null	11	2	stratified	0	0	0	0.0		
+simple_null	11	4	fisher	0	0	0	0.0		
+simple_null	11	4	stratified	0	0	0	0.0		
+simple_null	11	8	fisher	0	0	0	0.0		
+simple_null	11	8	stratified	0	0	0	0.0		
+simple_null	12	2	fisher	0	0	0	0.0		
+simple_null	12	2	stratified	0	0	0	0.0		
+simple_null	12	4	fisher	0	0	0	0.0		
+simple_null	12	4	stratified	0	0	0	0.0		
+simple_null	12	8	fisher	0	0	0	0.0		
+simple_null	12	8	stratified	0	0	0	0.0		
+simple_null	13	2	fisher	0	0	0	0.0		
+simple_null	13	2	stratified	0	0	0	0.0		
+simple_null	13	4	fisher	0	0	0	0.0		
+simple_null	13	4	stratified	0	0	0	0.0		
+simple_null	13	8	fisher	0	0	0	0.0		
+simple_null	13	8	stratified	0	0	0	0.0		
+simple_null	14	2	fisher	0	0	0	0.0		
+simple_null	14	2	stratified	0	0	0	0.0		
+simple_null	14	4	fisher	0	0	0	0.0		
+simple_null	14	4	stratified	0	0	0	0.0		
+simple_null	14	8	fisher	0	0	0	0.0		
+simple_null	14	8	stratified	0	0	0	0.0		
+simple_null	15	2	fisher	0	0	0	0.0		
+simple_null	15	2	stratified	0	0	0	0.0		
+simple_null	15	4	fisher	0	0	0	0.0		
+simple_null	15	4	stratified	0	0	0	0.0		
+simple_null	15	8	fisher	0	0	0	0.0		
+simple_null	15	8	stratified	0	0	0	0.0		
+simple_null	16	2	fisher	0	0	0	0.0		
+simple_null	16	2	stratified	0	0	0	0.0		
+simple_null	16	4	fisher	0	0	0	0.0		
+simple_null	16	4	stratified	0	0	0	0.0		
+simple_null	16	8	fisher	0	0	0	0.0		
+simple_null	16	8	stratified	0	0	0	0.0		
+simple_null	17	2	fisher	0	0	0	0.0		
+simple_null	17	2	stratified	0	0	0	0.0		
+simple_null	17	4	fisher	0	0	0	0.0		
+simple_null	17	4	stratified	0	0	0	0.0		
+simple_null	17	8	fisher	0	0	0	0.0		
+simple_null	17	8	stratified	0	0	0	0.0		
+simple_null	18	2	fisher	0	0	0	0.0		
+simple_null	18	2	stratified	0	0	0	0.0		
+simple_null	18	4	fisher	0	0	0	0.0		
+simple_null	18	4	stratified	0	0	0	0.0		
+simple_null	18	8	fisher	0	0	0	0.0		
+simple_null	18	8	stratified	0	0	0	0.0		
+simple_null	19	2	fisher	0	0	0	0.0		
+simple_null	19	2	stratified	0	0	0	0.0		
+simple_null	19	4	fisher	0	0	0	0.0		
+simple_null	19	4	stratified	0	0	0	0.0		
+simple_null	19	8	fisher	0	0	0	0.0		
+simple_null	19	8	stratified	0	0	0	0.0		
+simple_null	20	2	fisher	0	0	0	0.0		
+simple_null	20	2	stratified	0	0	0	0.0		
+simple_null	20	4	fisher	0	0	0	0.0		
+simple_null	20	4	stratified	0	0	0	0.0		
+simple_null	20	8	fisher	0	0	0	0.0		
+simple_null	20	8	stratified	0	0	0	0.0		
+simple_null	21	2	fisher	0	0	0	0.0		
+simple_null	21	2	stratified	0	0	0	0.0		
+simple_null	21	4	fisher	0	0	0	0.0		
+simple_null	21	4	stratified	0	0	0	0.0		
+simple_null	21	8	fisher	0	0	0	0.0		
+simple_null	21	8	stratified	0	0	0	0.0		
+simple_null	22	2	fisher	0	0	0	0.0		
+simple_null	22	2	stratified	0	0	0	0.0		
+simple_null	22	4	fisher	0	0	0	0.0		
+simple_null	22	4	stratified	0	0	0	0.0		
+simple_null	22	8	fisher	0	0	0	0.0		
+simple_null	22	8	stratified	0	0	0	0.0		
+simple_null	23	2	fisher	0	0	0	0.0		
+simple_null	23	2	stratified	0	0	0	0.0		
+simple_null	23	4	fisher	0	0	0	0.0		
+simple_null	23	4	stratified	0	0	0	0.0		
+simple_null	23	8	fisher	0	0	0	0.0		
+simple_null	23	8	stratified	0	0	0	0.0		
+simple_null	24	2	fisher	2	2	1	1.0		
+simple_null	24	2	stratified	0	0	0	0.0		
+simple_null	24	4	fisher	2	2	1	1.0		
+simple_null	24	4	stratified	2	2	1	1.0		
+simple_null	24	8	fisher	2	2	1	1.0		
+simple_null	24	8	stratified	2	2	1	1.0		
+simple_null	25	2	fisher	0	0	0	0.0		
+simple_null	25	2	stratified	0	0	0	0.0		
+simple_null	25	4	fisher	0	0	0	0.0		
+simple_null	25	4	stratified	0	0	0	0.0		
+simple_null	25	8	fisher	0	0	0	0.0		
+simple_null	25	8	stratified	0	0	0	0.0		
+simple_null	26	2	fisher	0	0	0	0.0		
+simple_null	26	2	stratified	0	0	0	0.0		
+simple_null	26	4	fisher	0	0	0	0.0		
+simple_null	26	4	stratified	0	0	0	0.0		
+simple_null	26	8	fisher	0	0	0	0.0		
+simple_null	26	8	stratified	0	0	0	0.0		
+simple_null	27	2	fisher	0	0	0	0.0		
+simple_null	27	2	stratified	0	0	0	0.0		
+simple_null	27	4	fisher	0	0	0	0.0		
+simple_null	27	4	stratified	0	0	0	0.0		
+simple_null	27	8	fisher	0	0	0	0.0		
+simple_null	27	8	stratified	0	0	0	0.0		
+simple_null	28	2	fisher	0	0	0	0.0		
+simple_null	28	2	stratified	0	0	0	0.0		
+simple_null	28	4	fisher	0	0	0	0.0		
+simple_null	28	4	stratified	0	0	0	0.0		
+simple_null	28	8	fisher	0	0	0	0.0		
+simple_null	28	8	stratified	0	0	0	0.0		
+simple_null	29	2	fisher	0	0	0	0.0		
+simple_null	29	2	stratified	0	0	0	0.0		
+simple_null	29	4	fisher	0	0	0	0.0		
+simple_null	29	4	stratified	0	0	0	0.0		
+simple_null	29	8	fisher	0	0	0	0.0		
+simple_null	29	8	stratified	0	0	0	0.0		
+confounded_null	0	2	fisher	3	3	1	1.0		
+confounded_null	0	2	stratified	1	1	1	1.0		
+confounded_null	0	4	fisher	3	3	1	1.0		
+confounded_null	0	4	stratified	1	1	1	1.0		
+confounded_null	0	8	fisher	3	3	1	1.0		
+confounded_null	0	8	stratified	1	1	1	1.0		
+confounded_null	1	2	fisher	1	1	1	1.0		
+confounded_null	1	2	stratified	0	0	0	0.0		
+confounded_null	1	4	fisher	1	1	1	1.0		
+confounded_null	1	4	stratified	0	0	0	0.0		
+confounded_null	1	8	fisher	1	1	1	1.0		
+confounded_null	1	8	stratified	0	0	0	0.0		
+confounded_null	2	2	fisher	5	5	1	1.0		
+confounded_null	2	2	stratified	0	0	0	0.0		
+confounded_null	2	4	fisher	5	5	1	1.0		
+confounded_null	2	4	stratified	0	0	0	0.0		
+confounded_null	2	8	fisher	5	5	1	1.0		
+confounded_null	2	8	stratified	0	0	0	0.0		
+confounded_null	3	2	fisher	0	0	0	0.0		
+confounded_null	3	2	stratified	0	0	0	0.0		
+confounded_null	3	4	fisher	0	0	0	0.0		
+confounded_null	3	4	stratified	0	0	0	0.0		
+confounded_null	3	8	fisher	0	0	0	0.0		
+confounded_null	3	8	stratified	0	0	0	0.0		
+confounded_null	4	2	fisher	4	4	1	1.0		
+confounded_null	4	2	stratified	0	0	0	0.0		
+confounded_null	4	4	fisher	4	4	1	1.0		
+confounded_null	4	4	stratified	0	0	0	0.0		
+confounded_null	4	8	fisher	4	4	1	1.0		
+confounded_null	4	8	stratified	0	0	0	0.0		
+confounded_null	5	2	fisher	5	5	1	1.0		
+confounded_null	5	2	stratified	0	0	0	0.0		
+confounded_null	5	4	fisher	5	5	1	1.0		
+confounded_null	5	4	stratified	0	0	0	0.0		
+confounded_null	5	8	fisher	5	5	1	1.0		
+confounded_null	5	8	stratified	0	0	0	0.0		
+confounded_null	6	2	fisher	0	0	0	0.0		
+confounded_null	6	2	stratified	0	0	0	0.0		
+confounded_null	6	4	fisher	0	0	0	0.0		
+confounded_null	6	4	stratified	0	0	0	0.0		
+confounded_null	6	8	fisher	0	0	0	0.0		
+confounded_null	6	8	stratified	0	0	0	0.0		
+confounded_null	7	2	fisher	7	7	1	1.0		
+confounded_null	7	2	stratified	0	0	0	0.0		
+confounded_null	7	4	fisher	7	7	1	1.0		
+confounded_null	7	4	stratified	0	0	0	0.0		
+confounded_null	7	8	fisher	7	7	1	1.0		
+confounded_null	7	8	stratified	0	0	0	0.0		
+confounded_null	8	2	fisher	5	5	1	1.0		
+confounded_null	8	2	stratified	0	0	0	0.0		
+confounded_null	8	4	fisher	5	5	1	1.0		
+confounded_null	8	4	stratified	0	0	0	0.0		
+confounded_null	8	8	fisher	5	5	1	1.0		
+confounded_null	8	8	stratified	0	0	0	0.0		
+confounded_null	9	2	fisher	0	0	0	0.0		
+confounded_null	9	2	stratified	0	0	0	0.0		
+confounded_null	9	4	fisher	0	0	0	0.0		
+confounded_null	9	4	stratified	0	0	0	0.0		
+confounded_null	9	8	fisher	0	0	0	0.0		
+confounded_null	9	8	stratified	0	0	0	0.0		
+confounded_null	10	2	fisher	0	0	0	0.0		
+confounded_null	10	2	stratified	0	0	0	0.0		
+confounded_null	10	4	fisher	0	0	0	0.0		
+confounded_null	10	4	stratified	0	0	0	0.0		
+confounded_null	10	8	fisher	0	0	0	0.0		
+confounded_null	10	8	stratified	0	0	0	0.0		
+confounded_null	11	2	fisher	4	4	1	1.0		
+confounded_null	11	2	stratified	0	0	0	0.0		
+confounded_null	11	4	fisher	4	4	1	1.0		
+confounded_null	11	4	stratified	0	0	0	0.0		
+confounded_null	11	8	fisher	4	4	1	1.0		
+confounded_null	11	8	stratified	0	0	0	0.0		
+confounded_null	12	2	fisher	0	0	0	0.0		
+confounded_null	12	2	stratified	0	0	0	0.0		
+confounded_null	12	4	fisher	0	0	0	0.0		
+confounded_null	12	4	stratified	0	0	0	0.0		
+confounded_null	12	8	fisher	0	0	0	0.0		
+confounded_null	12	8	stratified	0	0	0	0.0		
+confounded_null	13	2	fisher	7	7	1	1.0		
+confounded_null	13	2	stratified	0	0	0	0.0		
+confounded_null	13	4	fisher	7	7	1	1.0		
+confounded_null	13	4	stratified	0	0	0	0.0		
+confounded_null	13	8	fisher	7	7	1	1.0		
+confounded_null	13	8	stratified	0	0	0	0.0		
+confounded_null	14	2	fisher	1	1	1	1.0		
+confounded_null	14	2	stratified	0	0	0	0.0		
+confounded_null	14	4	fisher	1	1	1	1.0		
+confounded_null	14	4	stratified	0	0	0	0.0		
+confounded_null	14	8	fisher	1	1	1	1.0		
+confounded_null	14	8	stratified	0	0	0	0.0		
+confounded_null	15	2	fisher	2	2	1	1.0		
+confounded_null	15	2	stratified	0	0	0	0.0		
+confounded_null	15	4	fisher	2	2	1	1.0		
+confounded_null	15	4	stratified	0	0	0	0.0		
+confounded_null	15	8	fisher	2	2	1	1.0		
+confounded_null	15	8	stratified	0	0	0	0.0		
+confounded_null	16	2	fisher	0	0	0	0.0		
+confounded_null	16	2	stratified	0	0	0	0.0		
+confounded_null	16	4	fisher	0	0	0	0.0		
+confounded_null	16	4	stratified	0	0	0	0.0		
+confounded_null	16	8	fisher	0	0	0	0.0		
+confounded_null	16	8	stratified	0	0	0	0.0		
+confounded_null	17	2	fisher	0	0	0	0.0		
+confounded_null	17	2	stratified	0	0	0	0.0		
+confounded_null	17	4	fisher	0	0	0	0.0		
+confounded_null	17	4	stratified	0	0	0	0.0		
+confounded_null	17	8	fisher	0	0	0	0.0		
+confounded_null	17	8	stratified	0	0	0	0.0		
+confounded_null	18	2	fisher	5	5	1	1.0		
+confounded_null	18	2	stratified	1	1	1	1.0		
+confounded_null	18	4	fisher	5	5	1	1.0		
+confounded_null	18	4	stratified	0	0	0	0.0		
+confounded_null	18	8	fisher	5	5	1	1.0		
+confounded_null	18	8	stratified	0	0	0	0.0		
+confounded_null	19	2	fisher	2	2	1	1.0		
+confounded_null	19	2	stratified	0	0	0	0.0		
+confounded_null	19	4	fisher	2	2	1	1.0		
+confounded_null	19	4	stratified	0	0	0	0.0		
+confounded_null	19	8	fisher	2	2	1	1.0		
+confounded_null	19	8	stratified	0	0	0	0.0		
+confounded_null	20	2	fisher	1	1	1	1.0		
+confounded_null	20	2	stratified	0	0	0	0.0		
+confounded_null	20	4	fisher	1	1	1	1.0		
+confounded_null	20	4	stratified	0	0	0	0.0		
+confounded_null	20	8	fisher	1	1	1	1.0		
+confounded_null	20	8	stratified	0	0	0	0.0		
+confounded_null	21	2	fisher	4	4	1	1.0		
+confounded_null	21	2	stratified	0	0	0	0.0		
+confounded_null	21	4	fisher	4	4	1	1.0		
+confounded_null	21	4	stratified	0	0	0	0.0		
+confounded_null	21	8	fisher	4	4	1	1.0		
+confounded_null	21	8	stratified	0	0	0	0.0		
+confounded_null	22	2	fisher	2	2	1	1.0		
+confounded_null	22	2	stratified	0	0	0	0.0		
+confounded_null	22	4	fisher	2	2	1	1.0		
+confounded_null	22	4	stratified	0	0	0	0.0		
+confounded_null	22	8	fisher	2	2	1	1.0		
+confounded_null	22	8	stratified	0	0	0	0.0		
+confounded_null	23	2	fisher	0	0	0	0.0		
+confounded_null	23	2	stratified	0	0	0	0.0		
+confounded_null	23	4	fisher	0	0	0	0.0		
+confounded_null	23	4	stratified	0	0	0	0.0		
+confounded_null	23	8	fisher	0	0	0	0.0		
+confounded_null	23	8	stratified	0	0	0	0.0		
+confounded_null	24	2	fisher	3	3	1	1.0		
+confounded_null	24	2	stratified	0	0	0	0.0		
+confounded_null	24	4	fisher	3	3	1	1.0		
+confounded_null	24	4	stratified	0	0	0	0.0		
+confounded_null	24	8	fisher	3	3	1	1.0		
+confounded_null	24	8	stratified	0	0	0	0.0		
+confounded_null	25	2	fisher	1	1	1	1.0		
+confounded_null	25	2	stratified	0	0	0	0.0		
+confounded_null	25	4	fisher	1	1	1	1.0		
+confounded_null	25	4	stratified	0	0	0	0.0		
+confounded_null	25	8	fisher	1	1	1	1.0		
+confounded_null	25	8	stratified	0	0	0	0.0		
+confounded_null	26	2	fisher	0	0	0	0.0		
+confounded_null	26	2	stratified	0	0	0	0.0		
+confounded_null	26	4	fisher	0	0	0	0.0		
+confounded_null	26	4	stratified	0	0	0	0.0		
+confounded_null	26	8	fisher	0	0	0	0.0		
+confounded_null	26	8	stratified	0	0	0	0.0		
+confounded_null	27	2	fisher	0	0	0	0.0		
+confounded_null	27	2	stratified	0	0	0	0.0		
+confounded_null	27	4	fisher	0	0	0	0.0		
+confounded_null	27	4	stratified	0	0	0	0.0		
+confounded_null	27	8	fisher	0	0	0	0.0		
+confounded_null	27	8	stratified	0	0	0	0.0		
+confounded_null	28	2	fisher	0	0	0	0.0		
+confounded_null	28	2	stratified	0	0	0	0.0		
+confounded_null	28	4	fisher	0	0	0	0.0		
+confounded_null	28	4	stratified	0	0	0	0.0		
+confounded_null	28	8	fisher	0	0	0	0.0		
+confounded_null	28	8	stratified	0	0	0	0.0		
+confounded_null	29	2	fisher	0	0	0	0.0		
+confounded_null	29	2	stratified	0	0	0	0.0		
+confounded_null	29	4	fisher	0	0	0	0.0		
+confounded_null	29	4	stratified	0	0	0	0.0		
+confounded_null	29	8	fisher	0	0	0	0.0		
+confounded_null	29	8	stratified	0	0	0	0.0		
+simple_positive	0	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	0	2	stratified	1	0	0	0.0	1.0	
+simple_positive	0	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	0	4	stratified	1	0	0	0.0	1.0	
+simple_positive	0	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	0	8	stratified	1	0	0	0.0	1.0	
+simple_positive	1	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	1	2	stratified	1	0	0	0.0	1.0	
+simple_positive	1	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	1	4	stratified	1	0	0	0.0	1.0	
+simple_positive	1	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	1	8	stratified	1	0	0	0.0	1.0	
+simple_positive	2	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	2	2	stratified	1	0	0	0.0	1.0	
+simple_positive	2	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	2	4	stratified	1	0	0	0.0	1.0	
+simple_positive	2	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	2	8	stratified	1	0	0	0.0	1.0	
+simple_positive	3	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	3	2	stratified	1	0	0	0.0	1.0	
+simple_positive	3	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	3	4	stratified	1	0	0	0.0	1.0	
+simple_positive	3	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	3	8	stratified	1	0	0	0.0	1.0	
+simple_positive	4	2	fisher	0	0	0	0.0	0.0	1.0
+simple_positive	4	2	stratified	0	0	0	0.0	0.0	
+simple_positive	4	4	fisher	0	0	0	0.0	0.0	1.0
+simple_positive	4	4	stratified	0	0	0	0.0	0.0	
+simple_positive	4	8	fisher	0	0	0	0.0	0.0	1.0
+simple_positive	4	8	stratified	0	0	0	0.0	0.0	
+simple_positive	5	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	5	2	stratified	0	0	0	0.0	0.0	
+simple_positive	5	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	5	4	stratified	1	0	0	0.0	1.0	
+simple_positive	5	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	5	8	stratified	0	0	0	0.0	0.0	
+simple_positive	6	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	6	2	stratified	1	0	0	0.0	1.0	
+simple_positive	6	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	6	4	stratified	1	0	0	0.0	1.0	
+simple_positive	6	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	6	8	stratified	1	0	0	0.0	1.0	
+simple_positive	7	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	7	2	stratified	1	0	0	0.0	1.0	
+simple_positive	7	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	7	4	stratified	1	0	0	0.0	1.0	
+simple_positive	7	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	7	8	stratified	1	0	0	0.0	1.0	
+simple_positive	8	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	8	2	stratified	1	0	0	0.0	1.0	
+simple_positive	8	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	8	4	stratified	1	0	0	0.0	1.0	
+simple_positive	8	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	8	8	stratified	1	0	0	0.0	1.0	
+simple_positive	9	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	9	2	stratified	1	0	0	0.0	1.0	
+simple_positive	9	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	9	4	stratified	1	0	0	0.0	1.0	
+simple_positive	9	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	9	8	stratified	1	0	0	0.0	1.0	
+simple_positive	10	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	10	2	stratified	1	0	0	0.0	1.0	
+simple_positive	10	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	10	4	stratified	1	0	0	0.0	1.0	
+simple_positive	10	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	10	8	stratified	1	0	0	0.0	1.0	
+simple_positive	11	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	11	2	stratified	1	0	0	0.0	1.0	
+simple_positive	11	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	11	4	stratified	1	0	0	0.0	1.0	
+simple_positive	11	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	11	8	stratified	1	0	0	0.0	1.0	
+simple_positive	12	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	12	2	stratified	1	0	0	0.0	1.0	
+simple_positive	12	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	12	4	stratified	1	0	0	0.0	1.0	
+simple_positive	12	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	12	8	stratified	1	0	0	0.0	1.0	
+simple_positive	13	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	13	2	stratified	1	0	0	0.0	1.0	
+simple_positive	13	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	13	4	stratified	1	0	0	0.0	1.0	
+simple_positive	13	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	13	8	stratified	1	0	0	0.0	1.0	
+simple_positive	14	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	14	2	stratified	1	0	0	0.0	1.0	
+simple_positive	14	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	14	4	stratified	1	0	0	0.0	1.0	
+simple_positive	14	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	14	8	stratified	1	0	0	0.0	1.0	
+simple_positive	15	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	15	2	stratified	1	0	0	0.0	1.0	
+simple_positive	15	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	15	4	stratified	1	0	0	0.0	1.0	
+simple_positive	15	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	15	8	stratified	0	0	0	0.0	0.0	
+simple_positive	16	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	16	2	stratified	1	0	0	0.0	1.0	
+simple_positive	16	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	16	4	stratified	1	0	0	0.0	1.0	
+simple_positive	16	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	16	8	stratified	0	0	0	0.0	0.0	
+simple_positive	17	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	17	2	stratified	1	0	0	0.0	1.0	
+simple_positive	17	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	17	4	stratified	1	0	0	0.0	1.0	
+simple_positive	17	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	17	8	stratified	1	0	0	0.0	1.0	
+simple_positive	18	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	18	2	stratified	1	0	0	0.0	1.0	
+simple_positive	18	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	18	4	stratified	1	0	0	0.0	1.0	
+simple_positive	18	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	18	8	stratified	1	0	0	0.0	1.0	
+simple_positive	19	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	19	2	stratified	1	0	0	0.0	1.0	
+simple_positive	19	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	19	4	stratified	1	0	0	0.0	1.0	
+simple_positive	19	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	19	8	stratified	1	0	0	0.0	1.0	
+simple_positive	20	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	20	2	stratified	1	0	0	0.0	1.0	
+simple_positive	20	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	20	4	stratified	1	0	0	0.0	1.0	
+simple_positive	20	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	20	8	stratified	1	0	0	0.0	1.0	
+simple_positive	21	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	21	2	stratified	1	0	0	0.0	1.0	
+simple_positive	21	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	21	4	stratified	0	0	0	0.0	0.0	
+simple_positive	21	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	21	8	stratified	0	0	0	0.0	0.0	
+simple_positive	22	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	22	2	stratified	1	0	0	0.0	1.0	
+simple_positive	22	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	22	4	stratified	1	0	0	0.0	1.0	
+simple_positive	22	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	22	8	stratified	1	0	0	0.0	1.0	
+simple_positive	23	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	23	2	stratified	1	0	0	0.0	1.0	
+simple_positive	23	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	23	4	stratified	1	0	0	0.0	1.0	
+simple_positive	23	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	23	8	stratified	0	0	0	0.0	0.0	
+simple_positive	24	2	fisher	0	0	0	0.0	0.0	1.0
+simple_positive	24	2	stratified	1	0	0	0.0	1.0	
+simple_positive	24	4	fisher	0	0	0	0.0	0.0	1.0
+simple_positive	24	4	stratified	0	0	0	0.0	0.0	
+simple_positive	24	8	fisher	0	0	0	0.0	0.0	1.0
+simple_positive	24	8	stratified	1	0	0	0.0	1.0	
+simple_positive	25	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	25	2	stratified	0	0	0	0.0	0.0	
+simple_positive	25	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	25	4	stratified	1	0	0	0.0	1.0	
+simple_positive	25	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	25	8	stratified	1	0	0	0.0	1.0	
+simple_positive	26	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	26	2	stratified	1	0	0	0.0	1.0	
+simple_positive	26	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	26	4	stratified	1	0	0	0.0	1.0	
+simple_positive	26	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	26	8	stratified	1	0	0	0.0	1.0	
+simple_positive	27	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	27	2	stratified	1	0	0	0.0	1.0	
+simple_positive	27	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	27	4	stratified	1	0	0	0.0	1.0	
+simple_positive	27	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	27	8	stratified	1	0	0	0.0	1.0	
+simple_positive	28	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	28	2	stratified	1	0	0	0.0	1.0	
+simple_positive	28	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	28	4	stratified	1	0	0	0.0	1.0	
+simple_positive	28	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	28	8	stratified	1	0	0	0.0	1.0	
+simple_positive	29	2	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	29	2	stratified	0	0	0	0.0	0.0	
+simple_positive	29	4	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	29	4	stratified	1	0	0	0.0	1.0	
+simple_positive	29	8	fisher	1	0	0	0.0	1.0	1.0
+simple_positive	29	8	stratified	0	0	0	0.0	0.0	
+confounded_positive	0	2	fisher	6	5	1	0.8333333333333334	1.0	
+confounded_positive	0	2	stratified	2	1	1	0.5	1.0	
+confounded_positive	0	4	fisher	6	5	1	0.8333333333333334	1.0	
+confounded_positive	0	4	stratified	2	1	1	0.5	1.0	
+confounded_positive	0	8	fisher	6	5	1	0.8333333333333334	1.0	
+confounded_positive	0	8	stratified	2	1	1	0.5	1.0	
+confounded_positive	1	2	fisher	1	0	0	0.0	1.0	
+confounded_positive	1	2	stratified	0	0	0	0.0	0.0	
+confounded_positive	1	4	fisher	1	0	0	0.0	1.0	
+confounded_positive	1	4	stratified	0	0	0	0.0	0.0	
+confounded_positive	1	8	fisher	1	0	0	0.0	1.0	
+confounded_positive	1	8	stratified	0	0	0	0.0	0.0	
+confounded_positive	2	2	fisher	4	3	1	0.75	1.0	
+confounded_positive	2	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	2	4	fisher	4	3	1	0.75	1.0	
+confounded_positive	2	4	stratified	1	0	0	0.0	1.0	
+confounded_positive	2	8	fisher	4	3	1	0.75	1.0	
+confounded_positive	2	8	stratified	1	0	0	0.0	1.0	
+confounded_positive	3	2	fisher	2	1	1	0.5	1.0	
+confounded_positive	3	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	3	4	fisher	2	1	1	0.5	1.0	
+confounded_positive	3	4	stratified	1	0	0	0.0	1.0	
+confounded_positive	3	8	fisher	2	1	1	0.5	1.0	
+confounded_positive	3	8	stratified	1	0	0	0.0	1.0	
+confounded_positive	4	2	fisher	1	0	0	0.0	1.0	
+confounded_positive	4	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	4	4	fisher	1	0	0	0.0	1.0	
+confounded_positive	4	4	stratified	1	0	0	0.0	1.0	
+confounded_positive	4	8	fisher	1	0	0	0.0	1.0	
+confounded_positive	4	8	stratified	0	0	0	0.0	0.0	
+confounded_positive	5	2	fisher	5	4	1	0.8	1.0	
+confounded_positive	5	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	5	4	fisher	5	4	1	0.8	1.0	
+confounded_positive	5	4	stratified	2	1	1	0.5	1.0	
+confounded_positive	5	8	fisher	5	4	1	0.8	1.0	
+confounded_positive	5	8	stratified	1	0	0	0.0	1.0	
+confounded_positive	6	2	fisher	2	1	1	0.5	1.0	
+confounded_positive	6	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	6	4	fisher	2	1	1	0.5	1.0	
+confounded_positive	6	4	stratified	0	0	0	0.0	0.0	
+confounded_positive	6	8	fisher	2	1	1	0.5	1.0	
+confounded_positive	6	8	stratified	0	0	0	0.0	0.0	
+confounded_positive	7	2	fisher	2	1	1	0.5	1.0	
+confounded_positive	7	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	7	4	fisher	2	1	1	0.5	1.0	
+confounded_positive	7	4	stratified	1	0	0	0.0	1.0	
+confounded_positive	7	8	fisher	2	1	1	0.5	1.0	
+confounded_positive	7	8	stratified	0	0	0	0.0	0.0	
+confounded_positive	8	2	fisher	1	0	0	0.0	1.0	
+confounded_positive	8	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	8	4	fisher	1	0	0	0.0	1.0	
+confounded_positive	8	4	stratified	1	0	0	0.0	1.0	
+confounded_positive	8	8	fisher	1	0	0	0.0	1.0	
+confounded_positive	8	8	stratified	1	0	0	0.0	1.0	
+confounded_positive	9	2	fisher	2	1	1	0.5	1.0	
+confounded_positive	9	2	stratified	2	1	1	0.5	1.0	
+confounded_positive	9	4	fisher	2	1	1	0.5	1.0	
+confounded_positive	9	4	stratified	2	1	1	0.5	1.0	
+confounded_positive	9	8	fisher	2	1	1	0.5	1.0	
+confounded_positive	9	8	stratified	2	1	1	0.5	1.0	
+confounded_positive	10	2	fisher	4	3	1	0.75	1.0	
+confounded_positive	10	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	10	4	fisher	4	3	1	0.75	1.0	
+confounded_positive	10	4	stratified	1	0	0	0.0	1.0	
+confounded_positive	10	8	fisher	4	3	1	0.75	1.0	
+confounded_positive	10	8	stratified	0	0	0	0.0	0.0	
+confounded_positive	11	2	fisher	2	1	1	0.5	1.0	
+confounded_positive	11	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	11	4	fisher	2	1	1	0.5	1.0	
+confounded_positive	11	4	stratified	1	0	0	0.0	1.0	
+confounded_positive	11	8	fisher	2	1	1	0.5	1.0	
+confounded_positive	11	8	stratified	1	0	0	0.0	1.0	
+confounded_positive	12	2	fisher	3	2	1	0.6666666666666666	1.0	
+confounded_positive	12	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	12	4	fisher	3	2	1	0.6666666666666666	1.0	
+confounded_positive	12	4	stratified	1	0	0	0.0	1.0	
+confounded_positive	12	8	fisher	3	2	1	0.6666666666666666	1.0	
+confounded_positive	12	8	stratified	1	0	0	0.0	1.0	
+confounded_positive	13	2	fisher	2	1	1	0.5	1.0	
+confounded_positive	13	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	13	4	fisher	2	1	1	0.5	1.0	
+confounded_positive	13	4	stratified	1	0	0	0.0	1.0	
+confounded_positive	13	8	fisher	2	1	1	0.5	1.0	
+confounded_positive	13	8	stratified	1	0	0	0.0	1.0	
+confounded_positive	14	2	fisher	2	1	1	0.5	1.0	
+confounded_positive	14	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	14	4	fisher	2	1	1	0.5	1.0	
+confounded_positive	14	4	stratified	0	0	0	0.0	0.0	
+confounded_positive	14	8	fisher	2	1	1	0.5	1.0	
+confounded_positive	14	8	stratified	1	0	0	0.0	1.0	
+confounded_positive	15	2	fisher	2	1	1	0.5	1.0	
+confounded_positive	15	2	stratified	0	0	0	0.0	0.0	
+confounded_positive	15	4	fisher	2	1	1	0.5	1.0	
+confounded_positive	15	4	stratified	0	0	0	0.0	0.0	
+confounded_positive	15	8	fisher	2	1	1	0.5	1.0	
+confounded_positive	15	8	stratified	0	0	0	0.0	0.0	
+confounded_positive	16	2	fisher	1	0	0	0.0	1.0	
+confounded_positive	16	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	16	4	fisher	1	0	0	0.0	1.0	
+confounded_positive	16	4	stratified	1	0	0	0.0	1.0	
+confounded_positive	16	8	fisher	1	0	0	0.0	1.0	
+confounded_positive	16	8	stratified	1	0	0	0.0	1.0	
+confounded_positive	17	2	fisher	3	2	1	0.6666666666666666	1.0	
+confounded_positive	17	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	17	4	fisher	3	2	1	0.6666666666666666	1.0	
+confounded_positive	17	4	stratified	0	0	0	0.0	0.0	
+confounded_positive	17	8	fisher	3	2	1	0.6666666666666666	1.0	
+confounded_positive	17	8	stratified	0	0	0	0.0	0.0	
+confounded_positive	18	2	fisher	1	0	0	0.0	1.0	
+confounded_positive	18	2	stratified	0	0	0	0.0	0.0	
+confounded_positive	18	4	fisher	1	0	0	0.0	1.0	
+confounded_positive	18	4	stratified	0	0	0	0.0	0.0	
+confounded_positive	18	8	fisher	1	0	0	0.0	1.0	
+confounded_positive	18	8	stratified	0	0	0	0.0	0.0	
+confounded_positive	19	2	fisher	2	1	1	0.5	1.0	
+confounded_positive	19	2	stratified	0	0	0	0.0	0.0	
+confounded_positive	19	4	fisher	2	1	1	0.5	1.0	
+confounded_positive	19	4	stratified	0	0	0	0.0	0.0	
+confounded_positive	19	8	fisher	2	1	1	0.5	1.0	
+confounded_positive	19	8	stratified	0	0	0	0.0	0.0	
+confounded_positive	20	2	fisher	1	0	0	0.0	1.0	
+confounded_positive	20	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	20	4	fisher	1	0	0	0.0	1.0	
+confounded_positive	20	4	stratified	1	0	0	0.0	1.0	
+confounded_positive	20	8	fisher	1	0	0	0.0	1.0	
+confounded_positive	20	8	stratified	1	0	0	0.0	1.0	
+confounded_positive	21	2	fisher	5	4	1	0.8	1.0	
+confounded_positive	21	2	stratified	3	2	1	0.6666666666666666	1.0	
+confounded_positive	21	4	fisher	5	4	1	0.8	1.0	
+confounded_positive	21	4	stratified	3	2	1	0.6666666666666666	1.0	
+confounded_positive	21	8	fisher	5	4	1	0.8	1.0	
+confounded_positive	21	8	stratified	2	2	1	1.0	0.0	
+confounded_positive	22	2	fisher	6	5	1	0.8333333333333334	1.0	
+confounded_positive	22	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	22	4	fisher	6	5	1	0.8333333333333334	1.0	
+confounded_positive	22	4	stratified	0	0	0	0.0	0.0	
+confounded_positive	22	8	fisher	6	5	1	0.8333333333333334	1.0	
+confounded_positive	22	8	stratified	0	0	0	0.0	0.0	
+confounded_positive	23	2	fisher	6	5	1	0.8333333333333334	1.0	
+confounded_positive	23	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	23	4	fisher	6	5	1	0.8333333333333334	1.0	
+confounded_positive	23	4	stratified	1	0	0	0.0	1.0	
+confounded_positive	23	8	fisher	6	5	1	0.8333333333333334	1.0	
+confounded_positive	23	8	stratified	0	0	0	0.0	0.0	
+confounded_positive	24	2	fisher	1	0	0	0.0	1.0	
+confounded_positive	24	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	24	4	fisher	1	0	0	0.0	1.0	
+confounded_positive	24	4	stratified	1	0	0	0.0	1.0	
+confounded_positive	24	8	fisher	1	0	0	0.0	1.0	
+confounded_positive	24	8	stratified	1	0	0	0.0	1.0	
+confounded_positive	25	2	fisher	2	1	1	0.5	1.0	
+confounded_positive	25	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	25	4	fisher	2	1	1	0.5	1.0	
+confounded_positive	25	4	stratified	1	0	0	0.0	1.0	
+confounded_positive	25	8	fisher	2	1	1	0.5	1.0	
+confounded_positive	25	8	stratified	1	0	0	0.0	1.0	
+confounded_positive	26	2	fisher	5	4	1	0.8	1.0	
+confounded_positive	26	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	26	4	fisher	5	4	1	0.8	1.0	
+confounded_positive	26	4	stratified	1	0	0	0.0	1.0	
+confounded_positive	26	8	fisher	5	4	1	0.8	1.0	
+confounded_positive	26	8	stratified	1	0	0	0.0	1.0	
+confounded_positive	27	2	fisher	2	1	1	0.5	1.0	
+confounded_positive	27	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	27	4	fisher	2	1	1	0.5	1.0	
+confounded_positive	27	4	stratified	1	0	0	0.0	1.0	
+confounded_positive	27	8	fisher	2	1	1	0.5	1.0	
+confounded_positive	27	8	stratified	1	0	0	0.0	1.0	
+confounded_positive	28	2	fisher	5	4	1	0.8	1.0	
+confounded_positive	28	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	28	4	fisher	5	4	1	0.8	1.0	
+confounded_positive	28	4	stratified	0	0	0	0.0	0.0	
+confounded_positive	28	8	fisher	5	4	1	0.8	1.0	
+confounded_positive	28	8	stratified	0	0	0	0.0	0.0	
+confounded_positive	29	2	fisher	3	2	1	0.6666666666666666	1.0	
+confounded_positive	29	2	stratified	1	0	0	0.0	1.0	
+confounded_positive	29	4	fisher	3	2	1	0.6666666666666666	1.0	
+confounded_positive	29	4	stratified	0	0	0	0.0	0.0	
+confounded_positive	29	8	fisher	3	2	1	0.6666666666666666	1.0	
+confounded_positive	29	8	stratified	0	0	0	0.0	0.0	

@@ -1,0 +1,4 @@
+Term_ID	foreground_count_reference	universe_count_reference	foreground_total_reference	universe_total_reference	p_greater	p_two_sided	q_greater	q_two_sided	foreground_count_external	universe_count_external	foreground_total_external	universe_total_external	p_value	counts_match	p_match	q_harmonized	q_match
+GO:0006950	6	6	6	20	2.5799793601651186e-05	2.5799793601651186e-05	7.739938080495357e-05	3.869969040247678e-05	6	6	6	20	2.57997936016512e-05	True	True	7.739938080495359e-05	True
+GO:0008152	0	14	6	20	1.0	2.5799793601651186e-05	1.0	3.869969040247678e-05	0	14	6	20	1.0	True	True	1.0	True
+GO:0009408	4	4	6	20	0.003095975232198142	0.0030959752321981426	0.0046439628482972135	0.003095975232198142	4	4	6	20	0.0030959752321981	True	True	0.00464396284829715	True

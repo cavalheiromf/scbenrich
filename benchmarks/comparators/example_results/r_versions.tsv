@@ -1,0 +1,6 @@
+package	version
+R	4.5.1
+topGO	2.62.0
+GO.db	3.22.0
+clusterProfiler	4.18.4
+DOSE	4.4.0
