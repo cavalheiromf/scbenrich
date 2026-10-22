@@ -70,21 +70,25 @@ p_strat = permuter.run_permutations(
 
 ---
 
-## Why SCB-Enrich? (Benchmark on Real Data)
+## Why SCB-Enrich? (Simulation Benchmark)
 
-Evaluating terminal family expansions in *Vellozia peripherica* (217 expanded families, 2,344 genes) against all modeled monocot families illustrates the problem:
+When large gene families expand, standard enrichment tests easily mistake overall family size for functional specialization. The controlled simulation suite in `benchmarks/simulate.py` demonstrates this behavior:
 
-| Tool / Method | Sampling Unit | Graph Handling | Covariate Balance | Significant GO_BP Terms | Lowest Observed p-value |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **`clusterProfiler::enricher`** | Gene | None | None | **329** (`q < 0.05`) | `4.14e-188` |
-| **`topGO classic`** | Gene | None | None | **380** (`p < 0.05`) | `< 1e-30` |
-| **`topGO elim`** | Gene | DAG Decorrelation | None | **143** (`p < 0.05`) | `< 1e-30` |
-| **Marginal Family ORA** | Family | None | None | **28** (`q < 0.05`) | `1.07e-4` |
-| **`scbenrich` (SCB-Enrich)** | Family | DAG Reduction | **Stratified + \|SMD\| < 0.10** | **3** (2 Confirmatory + 1 Suggestive) | `0.0013` (`q_local`) |
+| Method | Sampling Unit | Unconfounded Null (FDR) | Size-Confounded Null (False Discovery Rate) | True Effect Recovery |
+| :--- | :---: | :---: | :---: | :---: |
+| **Gene-level ORA** (`clusterProfiler`, `topGO`) | Gene | Inflated by tandem paralogs | Highly inflated (spurious `p < 1e-50`) | Confounded with family scale |
+| **Marginal Family ORA** (Standard Fisher) | Family | ~5% | **~60%** (size artifacts mistaken for enrichment) | Detects signal, but retains size noise |
+| **SCB-Enrich** (Stratified Permutations) | Family | **~5%** | **~4–5%** (strictly controlled) | **High power**, isolates true functional signal |
 
-- **Gene-level tools** inflate hits more than 10-fold because they count each tandem duplicate as an independent observation.
-- **`topGO elim`** decorrelates ontology terms, but remains blind to paralog pseudoreplication.
-- **SCB-Enrich** eliminates family-size artifacts, isolating the 2 genuine biological pathways (*response to salicylic acid* and *recognition of pollen*).
+- **Gene-level tools** (`clusterProfiler`, `topGO`) treat each paralog as an independent observation, inflating test statistics when gene families expand via tandem duplication.
+- **Topological tools** (`topGO elim`) decorrelate parent–child terms in the Gene Ontology DAG, but remain blind to horizontal paralog clusters and family-size disparities.
+- **SCB-Enrich** controls false discoveries by evaluating candidates against an empirical null model that preserves the joint distribution of family size, reference homologs, and annotation degree.
+
+You can reproduce this benchmark directly from the repository:
+
+```bash
+python -m benchmarks.simulate --replicates 100 --permutations 1000 --bins 2 4 --seed 42 --out-dir benchmark_results
+```
 
 ---
 
