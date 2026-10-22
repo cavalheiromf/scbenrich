@@ -91,6 +91,21 @@ The CLI also applies BH to stratified p-values. Applying BH does not by itself v
 
 Provide one row per unique `Family_ID`, with numeric, finite covariates and a foreground indicator if selection is not supplied as a separate file. TSV (`.tsv`, `.tab`, `.txt`) and CSV files are supported.
 
+You can construct a validated master table programmatically using `build_master_table`:
+
+```python
+from scbenrich import build_master_table
+
+# Automatically merges counts, calculates Annotation_Degree, and adds foreground flag
+master_df = build_master_table(
+    gene_counts="Orthogroups.GeneCount.tsv",
+    annotations="annotations.tsv",
+    foreground={"OG0000001", "OG0000002", "OG0000007"},
+    foreground_col="is_expanded",
+    output_path="master_table.tsv",
+)
+```
+
 | Family_ID | Total_Count | Count_Ath | Annotation_Degree | is_expanded |
 | :--- | :--- | :--- | :--- | :--- |
 | OG0000001 | 25 | 4 | 12 | 1 |
