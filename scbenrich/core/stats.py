@@ -161,3 +161,4 @@ def fisher_exact_test(a, b, c, d, alternative="greater"):
     table = [[a, b], [c, d]]
     res = stats.fisher_exact(table, alternative=alternative)
     return float(res[0]), float(res[1])
+

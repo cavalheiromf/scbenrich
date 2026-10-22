@@ -106,3 +106,4 @@ If you use SCB-Enrich in your research, please cite:
 
 ## License
 MIT License. Copyright (c) 2026 Mariana Ferreira Cavalheiro.
+

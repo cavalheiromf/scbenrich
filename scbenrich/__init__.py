@@ -25,3 +25,4 @@ __all__ = [
     "propagate_go_annotations",
     "reduce_go_redundancy",
 ]
+

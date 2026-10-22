@@ -31,3 +31,4 @@ dev = [
 
 [project.scripts]
 scb-enrich = "scbenrich.cli:main"
+

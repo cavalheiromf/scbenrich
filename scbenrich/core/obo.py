@@ -129,3 +129,4 @@ def propagate_go_annotations(direct_annotations, ancestors_map, root_terms=None)
         propagated[fam] = all_terms
         
     return propagated
+

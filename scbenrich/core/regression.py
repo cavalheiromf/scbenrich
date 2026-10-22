@@ -71,3 +71,4 @@ def fit_covariate_model(y, fg_vec, covariate_matrix):
         return adj_or, p_lrt
     except Exception:
         return 1.0, 1.0
+

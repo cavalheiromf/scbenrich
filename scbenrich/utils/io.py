@@ -64,3 +64,4 @@ def save_results(df, output_path):
     output_path.parent.mkdir(parents=True, exist_ok=True)
     sep = "\t" if output_path.suffix in (".tsv", ".tab") else ","
     df.to_csv(output_path, sep=sep, index=False)
+

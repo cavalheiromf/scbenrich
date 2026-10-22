@@ -91,3 +91,4 @@ def test_pipeline_execution():
         assert "GO:0006950" in df_sig["Term_ID"].values
     finally:
         shutil.rmtree(tmp_out)
+

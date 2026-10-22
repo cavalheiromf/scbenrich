@@ -87,3 +87,4 @@ def reduce_go_redundancy(df_enrichment, ancestors_map, term_matrix=None, max_jac
 
     df_reduced = df.loc[kept_terms].drop(columns=["_rank_score"]).reset_index(drop=True)
     return df_reduced
+
