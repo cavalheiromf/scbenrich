@@ -63,16 +63,251 @@ def load_master_table(master_path):
     return df
 
 
+def load_gene_to_family_mapping(mapping_source):
+    """
+    Loads gene-to-family mapping from OrthoFinder results, files, or dictionaries.
+
+    Supported formats:
+    - dict or pd.Series: mapping gene_id -> family_id.
+    - Orthogroups.txt: text file with lines like 'OG0000001: gene1 gene2 ...'
+    - Orthogroups.tsv: table where col 0 is Orthogroup, and other cols are species with comma-separated gene IDs.
+    - 2-column TSV/CSV: columns for Gene_ID and Family_ID.
+    """
+    if isinstance(mapping_source, dict):
+        return {str(k).strip(): str(v).strip() for k, v in mapping_source.items()}
+    elif isinstance(mapping_source, pd.Series):
+        return {str(k).strip(): str(v).strip() for k, v in mapping_source.items()}
+    elif isinstance(mapping_source, pd.DataFrame):
+        df = mapping_source
+    elif isinstance(mapping_source, (str, Path)):
+        path = Path(mapping_source)
+        if not path.exists():
+            raise FileNotFoundError(f"Gene-to-family mapping file not found: {mapping_source}")
+
+        if str(path).endswith(".txt"):
+            mapping = {}
+            with open(path, "r", encoding="utf-8", errors="replace") as f:
+                first_line = f.readline()
+                f.seek(0)
+                if ":" in first_line and not first_line.startswith("#"):
+                    for line in f:
+                        line = line.strip()
+                        if not line or line.startswith("#") or ":" not in line:
+                            continue
+                        og, genes = line.split(":", 1)
+                        og = og.strip()
+                        for g in genes.split():
+                            mapping[g.strip()] = og
+                    return mapping
+
+        sep = "\t" if str(path).endswith((".tsv", ".tab", ".txt")) else ","
+        df = pd.read_csv(path, sep=sep, dtype=str)
+    else:
+        raise TypeError("mapping_source must be a dict, pd.Series, pd.DataFrame, or file path")
+
+    mapping = {}
+    id_aliases = ("family_id", "familyid", "orthogroup", "og", "family")
+
+    # 2-column DataFrame
+    if df.shape[1] == 2:
+        cols = list(df.columns)
+        if any(c.lower().strip() in id_aliases for c in cols):
+            og_col = [c for c in cols if c.lower().strip() in id_aliases][0]
+            gene_col = [c for c in cols if c != og_col][0]
+        else:
+            og_col, gene_col = cols[1], cols[0]
+        for _, row in df.iterrows():
+            g = str(row[gene_col]).strip()
+            fam = str(row[og_col]).strip()
+            if g and fam and g != "nan" and fam != "nan":
+                mapping[g] = fam
+        return mapping
+
+    # Orthogroups.tsv format
+    og_col = df.columns[0]
+    for _, row in df.iterrows():
+        fam = str(row[og_col]).strip()
+        if not fam or fam == "nan":
+            continue
+        for col in df.columns[1:]:
+            val = row[col]
+            if pd.notna(val):
+                for g in str(val).split(","):
+                    g = g.strip()
+                    if g and g != "nan":
+                        mapping[g] = fam
+    return mapping
+
+
+def extract_gff3_covariates(gff_path, gene_to_family, agg_func="mean"):
+    """
+    Extracts structural covariates (gene length, CDS length, exon count) from a GFF3/GTF file
+    and aggregates them by gene family.
+
+    Parameters
+    ----------
+    gff_path : str or Path
+        Path to GFF3 or GTF file (plain or gzip-compressed).
+    gene_to_family : dict, pd.Series, pd.DataFrame, str, or Path
+        Mapping from gene/transcript ID to Family_ID (e.g. from OrthoFinder).
+    agg_func : {"mean", "median"}, default "mean"
+        Aggregation function across genes in each family.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame indexed by Family_ID with columns:
+        - Mean_Gene_Length (or Median_Gene_Length)
+        - Mean_CDS_Length (or Median_CDS_Length)
+        - Mean_Exon_Count (or Median_Exon_Count)
+    """
+    gff_path = Path(gff_path)
+    if not gff_path.exists():
+        raise FileNotFoundError(f"GFF file not found: {gff_path}")
+
+    mapping = load_gene_to_family_mapping(gene_to_family)
+    if not mapping:
+        raise ValueError("gene_to_family mapping is empty")
+
+    def strip_prefix(s):
+        if not s:
+            return s
+        for p in ("gene:", "gene-", "transcript:", "transcript-", "rna:", "rna-", "protein:"):
+            if s.startswith(p):
+                return s[len(p):]
+        return s
+
+    genes = {}
+    from collections import defaultdict
+    txs = defaultdict(lambda: {"gene": None, "cds_len": 0, "exon_cnt": 0, "len": 0})
+
+    if str(gff_path).endswith(".gz"):
+        import gzip
+        opener = gzip.open(gff_path, "rt", encoding="utf-8", errors="replace")
+    else:
+        opener = open(gff_path, "r", encoding="utf-8", errors="replace")
+
+    with opener as handle:
+        for line in handle:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            parts = line.split("\t")
+            if len(parts) < 9:
+                continue
+            _, _, ftype, start_s, end_s, _, _, _, attr_str = parts
+            try:
+                start, end = int(start_s), int(end_s)
+            except ValueError:
+                continue
+            length = max(1, end - start + 1)
+            ftype_lower = ftype.lower()
+
+            attrs = {}
+            for item in attr_str.split(";"):
+                item = item.strip()
+                if not item:
+                    continue
+                if "=" in item:
+                    k, v = item.split("=", 1)
+                    attrs[k.strip()] = v.strip().strip('"').strip("'")
+                elif " " in item:
+                    subparts = item.split(None, 1)
+                    if len(subparts) == 2:
+                        attrs[subparts[0].strip()] = subparts[1].strip().strip('"').strip("'")
+
+            fid = attrs.get("ID") or attrs.get("gene_id") or attrs.get("transcript_id")
+            parent = attrs.get("Parent") or attrs.get("transcript_id") or attrs.get("gene_id")
+
+            clean_fid = strip_prefix(fid) if fid else None
+            clean_parent = strip_prefix(parent) if parent else None
+
+            if ftype_lower == "gene":
+                if clean_fid:
+                    genes[clean_fid] = length
+            elif ftype_lower in ("mrna", "transcript"):
+                if clean_fid:
+                    txs[clean_fid]["len"] = length
+                    if clean_parent:
+                        txs[clean_fid]["gene"] = clean_parent
+            elif ftype_lower == "exon":
+                if clean_parent:
+                    for p in clean_parent.split(","):
+                        txs[strip_prefix(p.strip())]["exon_cnt"] += 1
+            elif ftype_lower == "cds":
+                if clean_parent:
+                    for p in clean_parent.split(","):
+                        txs[strip_prefix(p.strip())]["cds_len"] += length
+
+    # Link genes to their transcripts
+    gene_to_txs = defaultdict(list)
+    for tid, tinfo in txs.items():
+        if tinfo["gene"]:
+            gene_to_txs[tinfo["gene"]].append(tinfo)
+
+    records = []
+    seen_genes = set()
+    for raw_gid, fam in mapping.items():
+        gid = strip_prefix(raw_gid)
+        if gid in seen_genes:
+            continue
+
+        if gid in genes or gid in gene_to_txs:
+            isoforms = gene_to_txs.get(gid, [])
+            g_len = genes.get(gid, max([t["len"] for t in isoforms], default=1))
+            cds_len = max([t["cds_len"] for t in isoforms], default=0)
+            exon_cnt = max([t["exon_cnt"] for t in isoforms], default=1)
+            records.append({
+                "Gene_ID": gid,
+                "Family_ID": fam,
+                "gene_length": g_len if g_len > 0 else 1,
+                "cds_length": cds_len,
+                "exon_count": exon_cnt if exon_cnt > 0 else 1,
+            })
+            seen_genes.add(gid)
+        elif gid in txs:
+            t = txs[gid]
+            g_len = genes.get(t["gene"], t["len"])
+            records.append({
+                "Gene_ID": gid,
+                "Family_ID": fam,
+                "gene_length": g_len if g_len > 0 else 1,
+                "cds_length": t["cds_len"],
+                "exon_count": t["exon_cnt"] if t["exon_cnt"] > 0 else 1,
+            })
+            seen_genes.add(gid)
+
+    if not records:
+        raise ValueError("None of the gene IDs in gene_to_family were found in the GFF file")
+
+    df_genes = pd.DataFrame(records)
+
+    agg = "median" if agg_func == "median" else "mean"
+    prefix = "Median" if agg == "median" else "Mean"
+    fam_df = df_genes.groupby("Family_ID")[["gene_length", "cds_length", "exon_count"]].agg(agg).rename(columns={
+        "gene_length": f"{prefix}_Gene_Length",
+        "cds_length": f"{prefix}_CDS_Length",
+        "exon_count": f"{prefix}_Exon_Count",
+    })
+
+    return fam_df
+
+
 def build_master_table(
     gene_counts,
     annotations=None,
     foreground=None,
     foreground_col="is_foreground",
     covariates=None,
+    gff3=None,
+    gene_to_family=None,
+    gff_agg="mean",
+    fill_gff_missing="median",
     output_path=None,
 ):
     """
-    Constructs a validated master table for scb-enrich from gene counts, annotations, and foreground data.
+    Constructs a validated master table for scb-enrich from gene counts, annotations, foreground data,
+    and optional GFF3 genomic features.
 
     Parameters
     ----------
@@ -89,7 +324,16 @@ def build_master_table(
         Column name to use for the binary foreground indicator (1 for foreground, 0 for background).
     covariates : list of str, optional
         Specific covariate columns to retain. If None, all numeric columns from gene_counts
-        (plus Annotation_Degree if computed) are kept.
+        (plus Annotation_Degree and GFF3 features if computed) are kept.
+    gff3 : str or Path, optional
+        Path to GFF3 or GTF file for extracting structural covariates.
+    gene_to_family : dict, pd.Series, pd.DataFrame, str, or Path, optional
+        Mapping from gene IDs to Family_ID (e.g. OrthoFinder Orthogroups.tsv / Orthogroups.txt).
+        Required if gff3 is provided.
+    gff_agg : {"mean", "median"}, default "mean"
+        Aggregation function across genes in each family for GFF features.
+    fill_gff_missing : {"median", "mean", float}, default "median"
+        Strategy to fill structural covariates for families not present in the GFF file.
     output_path : str or Path, optional
         If provided, writes the master table to TSV or CSV.
 
@@ -164,7 +408,26 @@ def build_master_table(
         df = df.merge(degree, on="Family_ID", how="left")
         df["Annotation_Degree"] = df["Annotation_Degree"].fillna(0).astype(int)
 
-    # 3. Handle Foreground
+    # 3. Extract GFF3 Covariates if provided
+    if gff3 is not None:
+        if gene_to_family is None:
+            raise ValueError("Extracting covariates from GFF3 requires gene_to_family mapping")
+        df_gff = extract_gff3_covariates(gff3, gene_to_family, agg_func=gff_agg)
+        for c in df_gff.columns:
+            if c in df.columns:
+                df = df.drop(columns=[c])
+        df = df.merge(df_gff, on="Family_ID", how="left")
+        for c in df_gff.columns:
+            if df[c].isna().any():
+                if fill_gff_missing == "median":
+                    fill_val = float(df_gff[c].median()) if len(df_gff) > 0 else 0.0
+                elif fill_gff_missing == "mean":
+                    fill_val = float(df_gff[c].mean()) if len(df_gff) > 0 else 0.0
+                else:
+                    fill_val = float(fill_gff_missing)
+                df[c] = df[c].fillna(fill_val)
+
+    # 4. Handle Foreground
     if foreground is not None:
         if isinstance(foreground, str) and foreground in df.columns:
             col = df[foreground]

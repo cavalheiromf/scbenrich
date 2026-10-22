@@ -12,7 +12,13 @@ from .core.stats import fdr_bh, fisher_exact_test, exact_conditional_or
 from .core.stratified import StratifiedPermuter, compute_smd
 from .core.obo import parse_obo, propagate_go_annotations
 from .core.dag import reduce_go_redundancy
-from .utils.io import load_annotations, load_master_table, build_master_table
+from .utils.io import (
+    load_annotations,
+    load_master_table,
+    build_master_table,
+    load_gene_to_family_mapping,
+    extract_gff3_covariates,
+)
 
 __all__ = [
     "__version__",
@@ -27,5 +33,7 @@ __all__ = [
     "load_annotations",
     "load_master_table",
     "build_master_table",
+    "load_gene_to_family_mapping",
+    "extract_gff3_covariates",
 ]
 

@@ -96,10 +96,13 @@ You can construct a validated master table programmatically using `build_master_
 ```python
 from scbenrich import build_master_table
 
-# Automatically merges counts, calculates Annotation_Degree, and adds foreground flag
+# Automatically merges counts, calculates Annotation_Degree,
+# extracts GFF3 structural covariates, and adds foreground flag
 master_df = build_master_table(
     gene_counts="Orthogroups.GeneCount.tsv",
     annotations="annotations.tsv",
+    gff3="species.gff3",                     # Optional: extracts Mean_Gene_Length, Mean_CDS_Length, Mean_Exon_Count
+    gene_to_family="Orthogroups.tsv",        # OrthoFinder gene-to-family mapping (TSV or txt)
     foreground={"OG0000001", "OG0000002", "OG0000007"},
     foreground_col="is_expanded",
     output_path="master_table.tsv",

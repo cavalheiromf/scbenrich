@@ -122,3 +122,71 @@ def test_build_master_table_errors(tmp_path):
     nan_cov = pd.DataFrame({"Family_ID": ["OG1", "OG2"], "Size": [1.0, np.nan]})
     with pytest.raises(ValueError, match="contains non-finite"):
         build_master_table(nan_cov, covariates=["Size"])
+
+
+def test_load_gene_to_family_mapping(tmp_path):
+    from scbenrich import load_gene_to_family_mapping
+
+    # 1. From dict
+    d = {"g1": "OG1", "g2": "OG2"}
+    assert load_gene_to_family_mapping(d) == d
+
+    # 2. From Orthogroups.txt
+    txt_path = tmp_path / "Orthogroups.txt"
+    txt_path.write_text("OG0000001: geneA1 geneA2\nOG0000002: geneB1\n")
+    m_txt = load_gene_to_family_mapping(txt_path)
+    assert m_txt == {"geneA1": "OG0000001", "geneA2": "OG0000001", "geneB1": "OG0000002"}
+
+    # 3. From Orthogroups.tsv
+    tsv_path = tmp_path / "Orthogroups.tsv"
+    tsv_path.write_text("Orthogroup\tSp1\tSp2\nOG1\tgA1, gA2\tgB1\nOG2\tgA3\t\n")
+    m_tsv = load_gene_to_family_mapping(tsv_path)
+    assert m_tsv == {"gA1": "OG1", "gA2": "OG1", "gB1": "OG1", "gA3": "OG2"}
+
+
+def test_extract_gff3_covariates_and_integration(tmp_path):
+    from scbenrich import extract_gff3_covariates
+
+    gff_content = (
+        "##gff-version 3\n"
+        "chr1\tsrc\tgene\t1000\t2500\t.\t+\t.\tID=gene:g1\n"
+        "chr1\tsrc\tmRNA\t1000\t2500\t.\t+\t.\tID=transcript:g1.1;Parent=gene:g1\n"
+        "chr1\tsrc\texon\t1000\t1200\t.\t+\t.\tParent=transcript:g1.1\n"
+        "chr1\tsrc\tCDS\t1050\t1200\t.\t+\t0\tParent=transcript:g1.1\n"
+        "chr1\tsrc\texon\t1800\t2500\t.\t+\t.\tParent=transcript:g1.1\n"
+        "chr1\tsrc\tCDS\t1800\t2400\t.\t+\t0\tParent=transcript:g1.1\n"
+        "chr1\tsrc\tgene\t5000\t6000\t.\t-\t.\tID=g2\n"
+        "chr1\tsrc\tmRNA\t5000\t6000\t.\t-\t.\tID=g2.1;Parent=g2\n"
+        "chr1\tsrc\texon\t5000\t6000\t.\t-\t.\tParent=g2.1\n"
+        "chr1\tsrc\tCDS\t5100\t5900\t.\t-\t0\tParent=g2.1\n"
+    )
+    gff_file = tmp_path / "sample.gff3"
+    gff_file.write_text(gff_content)
+
+    mapping = {"g1": "OG1", "g2": "OG1"}
+    covs = extract_gff3_covariates(gff_file, mapping, agg_func="mean")
+    assert "OG1" in covs.index
+    # g1: gene_length=1501, cds_length=(151+601)=752, exon_count=2
+    # g2: gene_length=1001, cds_length=801, exon_count=1
+    # mean gene_length: (1501 + 1001)/2 = 1251.0
+    assert covs.loc["OG1", "Mean_Gene_Length"] == 1251.0
+    assert covs.loc["OG1", "Mean_Exon_Count"] == 1.5
+
+    # Integration test with build_master_table
+    counts_df = pd.DataFrame({
+        "Orthogroup": ["OG1", "OG_MISSING"],
+        "Total_Count": [2, 5],
+    })
+    master = build_master_table(
+        gene_counts=counts_df,
+        gff3=gff_file,
+        gene_to_family=mapping,
+        fill_gff_missing="median",
+    )
+    assert "Mean_Gene_Length" in master.columns
+    assert "Mean_CDS_Length" in master.columns
+    assert "Mean_Exon_Count" in master.columns
+    assert master.loc["OG1", "Mean_Gene_Length"] == 1251.0
+    # OG_MISSING gets filled with median
+    assert master.loc["OG_MISSING", "Mean_Gene_Length"] == 1251.0
+
