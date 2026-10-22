@@ -73,11 +73,11 @@ Evaluating lineage-specific expansions in *Vellozia peripherica* (217 expanded f
 
 | Tool / Framework | Sampling Unit | Graph Treatment | Covariate Control (Size / Degree) | Significant GO_BP Terms | Lowest Observed p-value |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **`clusterProfiler::enricher`** | Gene | None | None | **329** ($q < 0.05$) | $4.14 \times 10^{-188}$ |
-| **`topGO classic` (Fisher)** | Gene | None | None | **380** ($p < 0.05$) | $< 10^{-30}$ |
-| **`topGO elim` (Fisher)** | Gene | DAG Decorrelation | None | **143** ($p < 0.05$) | $< 10^{-30}$ |
-| **Marginal Family ORA** | Family | None | None | **28** ($q < 0.05$) | $1.07 \times 10^{-4}$ |
-| **`scbenrich` (SCB-Enrich)** | Family | DAG Reduction | **Stratified Permutations + SMD < 0.10** | **3** (2 Robust + 1 Suggestive) | $0.0013$ ($q_{local}$) / $0.017$ ($p_{strat}$) |
+| **`clusterProfiler::enricher`** | Gene | None | None | **329** (`q < 0.05`) | `4.14e-188` |
+| **`topGO classic` (Fisher)** | Gene | None | None | **380** (`p < 0.05`) | `< 1e-30` |
+| **`topGO elim` (Fisher)** | Gene | DAG Decorrelation | None | **143** (`p < 0.05`) | `< 1e-30` |
+| **Marginal Family ORA** | Family | None | None | **28** (`q < 0.05`) | `1.07e-4` |
+| **`scbenrich` (SCB-Enrich)** | Family | DAG Reduction | **Stratified Permutations + \|SMD\| < 0.10** | **3** (2 Robust + 1 Suggestive) | `0.0013` (`q_local`) / `0.017` (`p_strat`) |
 
 *Takeaway:* Gene-level tools inflate discoveries by over an order of magnitude due to tandem paralog duplication. Even at the family level, 25 of the 28 marginal terms (89%) fail under covariate-balanced permutations because they are driven by large family size. SCB-Enrich isolates the 2 genuinely specialized pathways (*response to salicylic acid* and *recognition of pollen*).
 
@@ -235,12 +235,12 @@ Values of $|SMD| < 0.10$ indicate that foreground and background families for th
 
 Every tested term is classified according to statistical stringency:
 
-| Classification | Marginal FDR ($q_{local}$) | Stratified Permutation ($p_{strat}$) | Covariate Balance ($|SMD|$) | Interpretation |
+| Classification | Marginal FDR (`q_local`) | Stratified Permutation (`p_strat`) | Covariate Balance (`\|SMD\|`) | Interpretation |
 | :--- | :---: | :---: | :---: | :--- |
-| **Confirmatory (Robust)** | $< 0.05$ | $< 0.05$ | $< 0.10$ | Highly supported candidate; functional signal is independent of family size and annotation density. |
-| **Suggestive** | $< 0.05$ | $< 0.05$ | $\ge 0.10$ (or marginal $q_{global}$) | Candidate with empirical permutation support but residual covariate imbalance. |
-| **Size Artifact** | $< 0.05$ | $\ge 0.05$ | Any | False discovery in standard ORA; significance is explained away by family size or annotation bias. |
-| **Not Significant** | $\ge 0.05$ | Any | Any | No marginal overrepresentation detected. |
+| **Confirmatory (Robust)** | `< 0.05` | `< 0.05` | `< 0.10` | Highly supported candidate; functional signal is independent of family size and annotation density. |
+| **Suggestive** | `< 0.05` | `< 0.05` | `≥ 0.10` (or marginal `q_global`) | Candidate with empirical permutation support but residual covariate imbalance. |
+| **Size Artifact** | `< 0.05` | `≥ 0.05` | Any | False discovery in standard ORA; significance is explained away by family size or annotation bias. |
+| **Not Significant** | `≥ 0.05` | Any | Any | No marginal overrepresentation detected. |
 
 ---
 
