@@ -14,7 +14,7 @@ By modeling gene families rather than individual genes and evaluating candidates
 
 Standard functional enrichment workflows—such as `clusterProfiler::enricher`, `topGO`, or `GOATOOLS`—were designed for differential expression, where single genes serve as independent observations. When applied to macroevolutionary gene-family expansions (e.g., from CAFE or OrthoFinder), these tools suffer from three fundamental biases:
 
-1. **Paralog Pseudoreplication**: Lineage-specific expansions typically arise via tandem or proximal duplications, yielding dozens of co-annotated paralogous genes derived from a single evolutionary event. Treating each paralog as an independent draw severely violates statistical independence, artificially inflating test statistics ($p < 10^{-50}$ to $10^{-180}$) and generating hundreds of spurious functional discoveries.
+1. **Paralog Pseudoreplication**: Lineage-specific expansions typically arise via tandem or proximal duplications, yielding dozens of co-annotated paralogous genes derived from a single evolutionary event. Treating each paralog as an independent draw severely violates statistical independence, artificially inflating test statistics (`p < 1e-50` to `1e-180`) and generating hundreds of spurious functional discoveries.
 2. **Extrinsic Family-Size Confounding**: Expanded families are systematically larger and more thoroughly annotated across reference species. Standard hypergeometric or Fisher tests confound genuine biological specialization with overall family size and annotation density.
 3. **The Inadequacy of Topological Graph Decorrelation (`topGO elim`)**: While graph-decorrelation algorithms (e.g., `topGO elim`) resolve vertical parent–child redundancies within the Gene Ontology directed acyclic graph (DAG), they operate entirely along ontology edges. They remain blind to horizontal paralog clusters and family-size disparities, continuing to treat dozens of tandem duplicates as independent events.
 
@@ -27,7 +27,7 @@ SCB-Enrich resolves these limitations through a principled two-tier statistical 
   - **Family Size** (total gene count across the comparative clade)
   - **Reference Homolog Count** (mapped homologs in a model species such as *Arabidopsis thaliana*)
   - **Annotation Degree** (total number of distinct functional terms assigned)
-- **Covariate Balance Auditing (SMD)**: For each category, balance between foreground and background families is validated using Standardized Mean Differences, requiring $|SMD| < 0.10$.
+- **Covariate Balance Auditing (SMD)**: For each category, balance between foreground and background families is validated using Standardized Mean Differences, requiring `|SMD| < 0.10`.
 
 ```
                         Input Data (OrthoFinder / CAFE / GFF3)
@@ -217,19 +217,27 @@ A tab-separated file linking families to functional terms. Multiple genes in the
 For each term, a 2×2 contingency table is constructed across eligible families:
 - Evaluates one-sided Fisher's exact test (`greater`).
 - Calculates the exact conditional maximum likelihood odds ratio (`Marginal_OR`) with 95% confidence intervals based on Fisher's noncentral hypergeometric distribution.
-- Computes Benjamini–Hochberg adjusted $q$-values (`q_value`).
+- Computes Benjamini–Hochberg adjusted q-values (`q_value`).
 
-### 2. Stratified Permutations ($p_{strat}$)
+### 2. Stratified Permutations (`p_strat`)
 - Families are jointly partitioned into strata using multi-dimensional quantile binning across the selected covariates.
-- In each of the $B$ replicates (default: 10,000), random foreground sets are drawn without replacement within each stratum, strictly preserving the observed foreground size and stratum proportions.
+- In each of the replicates (default: 10,000), random foreground sets are drawn without replacement within each stratum, strictly preserving the observed foreground size and stratum proportions.
 - The empirical stratified p-value is computed as:
-  $$p_{strat} = \frac{b + 1}{B + 1}$$
-  where $b$ is the number of permutations where the sampled foreground count equals or exceeds the observed count.
+
+```text
+p_strat = (b + 1) / (B + 1)
+```
+
+where `b` is the number of permutations where the sampled foreground count equals or exceeds the observed count, and `B` is the total number of permutations.
 
 ### 3. Covariate Balance Diagnostic (`Max_SMD`)
 To verify that significance is not driven by residual covariate imbalance between foreground and background families within a term, SCB-Enrich computes the absolute Standardized Mean Difference:
-$$SMD = \frac{\bar{X}_{fg} - \bar{X}_{bg}}{\sqrt{\frac{s_{fg}^2 + s_{bg}^2}{2}}}$$
-Values of $|SMD| < 0.10$ indicate that foreground and background families for that category have balanced opportunity distributions.
+
+```text
+SMD = (mean(X_fg) - mean(X_bg)) / sqrt((var(X_fg) + var(X_bg)) / 2)
+```
+
+Values of `|SMD| < 0.10` indicate that foreground and background families for that category have balanced opportunity distributions.
 
 ### 4. Four-Tier Evidence Classification
 
@@ -250,9 +258,9 @@ The CLI outputs a structured set of tables and audit diagnostics:
 
 | Output File | Description |
 | :--- | :--- |
-| `enrichment_results_all.tsv` | Complete results for all tested terms: counts, marginal OR, 95% CI, Fisher p-value, BH $q$-value, raw and adjusted $p_{strat}$, Max_SMD, and evidence classification. |
-| `enrichment_results_significant.tsv` | Subset of terms meeting marginal significance ($q < 0.05$). |
-| `enrichment_results_stratified.tsv` | Subset of terms meeting stratified permutation significance ($p_{strat\_adj} < 0.05$). |
+| `enrichment_results_all.tsv` | Complete results for all tested terms: counts, marginal OR, 95% CI, Fisher p-value, BH q-value, raw and adjusted p_strat, Max_SMD, and evidence classification. |
+| `enrichment_results_significant.tsv` | Subset of terms meeting marginal significance (`q < 0.05`). |
+| `enrichment_results_stratified.tsv` | Subset of terms meeting stratified permutation significance (`p_strat_adj < 0.05`). |
 | `enrichment_results_nonredundant_*.tsv` | Nonredundant term summaries after greedy DAG ancestor reduction (separate for marginal and stratified lists). |
 | `term_reduction_map_*.tsv` | Audit mapping showing which descendant terms pruned which ancestor terms during redundancy reduction. |
 | `balance_diagnostics.tsv` | Observed covariate means vs. empirical distribution of null sample means. |
