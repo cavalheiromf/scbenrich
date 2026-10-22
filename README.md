@@ -7,6 +7,33 @@
 
 Each family contributes at most once per functional term. The permutation test preserves the observed number of selected families within each joint covariate bin. It does not exactly condition on continuous covariate values, and residual confounding can remain within bins. **The available validation does not establish general FDR control at 5%.**
 
+## Quick Start
+
+Run a complete example using the small dataset included in the repository. From a terminal:
+
+```bash
+git clone https://github.com/mfcaval/scbenrich.git
+cd scbenrich
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install .
+
+scb-enrich \
+  --master-table examples/mock_master_table.tsv \
+  --annotations examples/mock_annotations.tsv \
+  --foreground is_expanded \
+  --min-universe 2 \
+  --out-dir quickstart_results
+```
+
+If the repository and environment are already set up, run only the `scb-enrich` command from the repository root. The output directory must be absent or empty.
+
+This example selects families marked `is_expanded=1` as the foreground and uses all other families in the master table as the background. It uses the default covariates, 10,000 permutations, automatic bins and seed 42. `--min-universe 2` allows terms annotated in at least two families to be tested in this small example; the normal default is five. No OBO file is needed.
+
+Open `quickstart_results/enrichment_results_all.tsv` for the complete results. The `enrichment_results_significant.tsv` and `enrichment_results_stratified.tsv` files contain the separate marginal and stratified discovery lists; either list may be empty. `run_metadata.json` records the execution status and provenance.
+
+This example demonstrates the workflow, not biological validation. For your own data, replace the two input files and the foreground column or ID list, then review the [CLI arguments and defaults](#cli-arguments-and-defaults) and [input formats](#input-formats).
+
 ## Biological Motivation and Scope
 
 A family-level analysis matches questions about family expansion and avoids counting multiple annotated paralogs as separate family observations. It does not establish independence between families or account for shared phylogenetic history.
@@ -59,6 +86,13 @@ cd scbenrich
 pip install .
 ```
 
+A standard `pip install .` installs the required runtime dependencies: NumPy, SciPy, pandas and PyYAML. The package requires Python 3.8 or later. Optional extras are installed only when requested:
+
+| Extra | Adds | Needed for |
+| :--- | :--- | :--- |
+| `dev` | pytest | Running the test suite. |
+| `benchmark` | Matplotlib | Generating benchmark plots. |
+
 ### For Development & Benchmarks
 
 ```bash
@@ -68,7 +102,7 @@ pytest
 
 ---
 
-## Quick Start
+## Detailed Usage
 
 ### 1. Constructing the Master Table Programmatically
 
@@ -92,7 +126,19 @@ master_df = build_master_table(
 
 ### 2. Command-Line Interface (CLI)
 
-Run full stratified enrichment with GO DAG propagation:
+The CLI requires only `--master-table`, `--annotations` and `--foreground`. A minimal invocation is:
+
+```bash
+scb-enrich \
+  --master-table master_table.tsv \
+  --annotations annotations.tsv \
+  --foreground is_expanded
+```
+
+This uses the default covariate columns, runs 10,000 permutations, writes to `scb_enrich_results/` and does not load an ontology. The default covariate columns must exist and contain finite numeric values. To use different columns, pass `--covariates` explicitly.
+
+The following example supplies optional settings explicitly and enables GO ancestor propagation by providing `--obo`:
+
 
 ```bash
 scb-enrich \
@@ -108,16 +154,28 @@ scb-enrich \
   --out-dir results/
 ```
 
-Key CLI options:
+#### CLI Arguments and Defaults
 
-- `--master-table`: Path to TSV/CSV with one row per family and numeric covariates.
-- `--annotations`: Path to family-to-term mapping (`Family_ID`, `Term_ID`, optional `Term_Name`, `Category`).
-- `--foreground`: Column name in master table (boolean or 1/0) or path to a text file with one family ID per line.
-- `--covariates`: Comma-separated list of numeric covariates to balance (e.g. `Total_Count,Count_Ath,Annotation_Degree`).
-- `--obo`: Path to `go-basic.obo` for hierarchical ancestor propagation and redundancy reduction.
-- `--permutations`: Number of stratified resampling replicates (default: `10000`; set to `0` for marginal tests only).
-- `--bins`: Number of quantile strata per covariate (default: dynamic quantile heuristic).
-- `--out-dir`: Empty destination directory for output tables, diagnostics and run metadata. Failed runs retain failure metadata.
+| Argument | Required? | Default when omitted | Purpose |
+| :--- | :--- | :--- | :--- |
+| `--master-table`, `-m` | Yes | None | TSV/CSV table with one row per family, a `Family_ID` column and numeric covariates. |
+| `--annotations`, `-a` | Yes | None | TSV/CSV family-to-term mapping with `Family_ID` and `Term_ID`; `Term_Name` and `Category` are optional columns. |
+| `--foreground`, `-f` | Yes | None | Foreground column name in the master table, or a text file with one family ID per line. |
+| `--covariates`, `-c` | No | `Total_Count,Count_Ath,Annotation_Degree` | Comma-separated numeric columns used for joint stratification. Omitting the argument still requires these default columns in the input. |
+| `--obo` | No | `None` (no ontology loaded) | OBO file, such as `go-basic.obo`, for GO ID normalization, ancestor propagation and redundancy summaries. |
+| `--permutations`, `-p` | No | `10000` | Number of stratified resampling replicates. Set to `0` for marginal tests only. |
+| `--min-universe` | No | `5` | Minimum number of eligible families annotated with a term for that term to be tested. |
+| `--max-universe-fraction` | No | `0.90` | Maximum fraction of eligible families annotated with a term for that term to be tested. |
+| `--bins` | No | `None` (automatic heuristic) | Requested quantile bins per covariate; an explicit value must be an integer ≥2. |
+| `--seed` | No | `42` | Random seed for resampling. |
+| `--out-dir`, `-o` | No | `scb_enrich_results` | Output directory. It must be absent or empty; failed runs retain failure metadata. |
+| `--help`, `-h` | No | Not requested | Print the CLI help and exit. |
+
+Without `--obo`, the analysis uses the terms supplied directly in the annotation table. Marginal and stratified tests still run, but GO ID normalization, ancestor propagation and hierarchy-based redundancy summaries are disabled.
+
+When `--bins` is omitted, the requested number for each covariate is `min(10, max(2, n_unique // 5))`, where `n_unique` is its number of distinct values. Repeated quantile boundaries can reduce the actual number of bins; constant covariates form one group. The automatic setting is a heuristic, not a guarantee of calibration or adequate randomization support.
+
+`--min-universe` and `--max-universe-fraction` filter terms, not families. All rows in the master table define the eligible family universe; the background consists of all eligible families outside the foreground.
 
 ### 3. Python API
 
