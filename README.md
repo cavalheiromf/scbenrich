@@ -174,6 +174,12 @@ For simulation protocols, validation audits, and mathematical derivations, see [
 
 ---
 
+## Use of AI Assistance
+
+Generative AI tools (including Claude and OpenAI Codex) were used to assist with code drafting, unit test development, documentation, and refactoring. The authors designed the study, verified the statistical models, interpreted all biological results, and maintain full responsibility for the code and conclusions.
+
+---
+
 ## Citation
 
 If you use SCB-Enrich in your research, please cite:
