@@ -268,6 +268,12 @@ python -m benchmarks.simulate --replicates 30 --permutations 199 --bins 2 4 8 --
 
 ---
 
+## Use of AI Assistance
+
+AI assistance, including OpenAI Codex, was used during software development, test creation, documentation drafting and translation, and code and statistical-method review. AI-assisted review is not independent scientific validation. The project authors remain responsible for the code, methodological choices, interpretation of results and final documentation. Validation evidence and known limitations are documented in the sections above and the linked audit report.
+
+---
+
 ## Citation
 
 If you use SCB-Enrich in your research, please cite:
