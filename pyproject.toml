@@ -33,3 +33,7 @@ dev = [
 [project.scripts]
 scb-enrich = "scbenrich.cli:main"
 
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["scbenrich*"]
+
