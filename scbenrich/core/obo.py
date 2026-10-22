@@ -65,7 +65,7 @@ def parse_obo(obo_path):
                     current_term["is_obsolete"] = True
                 elif line.startswith("replaced_by: GO:"):
                     rep = line.split("replaced_by: ")[1].strip()
-                    replaced_map[current_term["id"]] = rep
+                    replaced_map.setdefault(current_term["id"], set()).add(rep)
                 elif line.startswith("is_a: GO:"):
                     p = line.split("is_a: ")[1].split()[0].strip()
                     parents_map[current_term["id"]].add(p)
@@ -82,13 +82,19 @@ def parse_obo(obo_path):
     # Compute recursive ancestor map
     ancestors_map = {}
     
+    visiting = set()
+
     def get_ancestors(t):
+        if t in visiting:
+            raise ValueError(f"ontology cycle at {t}")
         if t in ancestors_map:
             return ancestors_map[t]
+        visiting.add(t)
         anc = set()
         for p in parents_map.get(t, []):
             anc.add(p)
             anc.update(get_ancestors(p))
+        visiting.remove(t)
         ancestors_map[t] = anc
         return anc
 
@@ -130,3 +136,29 @@ def propagate_go_annotations(direct_annotations, ancestors_map, root_terms=None)
         
     return propagated
 
+
+
+def normalize_go_id(term_id, terms, alt_map, replacements, return_path=False):
+    """Resolve aliases and replacement chains; reject ambiguity and cycles."""
+    if not term_id.startswith("GO:"):
+        return (term_id, [term_id]) if return_path else term_id
+    path = []
+    current = term_id
+    while True:
+        if current in path:
+            raise ValueError(f"GO replacement cycle: {path + [current]}")
+        path.append(current)
+        if current in alt_map:
+            current = alt_map[current]
+            continue
+        if current not in terms:
+            raise ValueError(f"unknown GO term: {current}")
+        destinations = replacements.get(current, set())
+        if len(destinations) > 1:
+            raise ValueError(f"ambiguous GO replacement: {current}")
+        if destinations:
+            current = next(iter(destinations))
+            continue
+        if terms[current].get("is_obsolete"):
+            raise ValueError(f"obsolete GO term without replacement: {current}")
+        return (current, path) if return_path else current

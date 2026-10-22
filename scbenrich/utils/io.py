@@ -18,7 +18,7 @@ def load_annotations(annotation_path):
     - Category / Namespace (optional: BP, MF, CC, KEGG)
     """
     sep = "\t" if str(annotation_path).endswith((".tsv", ".tab", ".txt")) else ","
-    df = pd.read_csv(annotation_path, sep=sep)
+    df = pd.read_csv(annotation_path, sep=sep, dtype=str)
     
     # Standardize column names
     col_map = {}
@@ -44,7 +44,11 @@ def load_master_table(master_path):
     Expected format: TSV or CSV indexed by Family_ID.
     """
     sep = "\t" if str(master_path).endswith((".tsv", ".tab", ".txt")) else ","
-    df = pd.read_csv(master_path, sep=sep)
+    header = pd.read_csv(master_path, sep=sep, nrows=0)
+    id_cols = [c for c in header if c.lower().strip() in ("family_id", "familyid", "orthogroup", "og", "family")]
+    if not id_cols:
+        raise ValueError("master table requires Family_ID column")
+    df = pd.read_csv(master_path, sep=sep, dtype={id_cols[0]: str})
     
     # Standardize family id column
     for c in df.columns:

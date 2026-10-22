@@ -1,9 +1,8 @@
 """
 SCB-Enrich: Stratified Covariate-Balanced Enrichment for Gene Families.
 
-A robust framework for functional overrepresentation testing in multi-gene families
-that explicitly controls for family size, reference homolog count, and annotation degree
-through multi-dimensional stratification, null resampling, and semantic DAG reduction.
+Exploratory family-level enrichment using covariate strata. Statistical validity
+requires exchangeability within the selected strata.
 """
 
 __version__ = "0.1.0"

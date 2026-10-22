@@ -46,100 +46,23 @@ def log_comb(n, k):
 
 
 def exact_conditional_or(a, b, c, d, alpha=0.05):
+    """Conditional 2x2 odds ratio and equal-tailed exact confidence interval.
+
+    Returns NaN estimates for tables with no identifiable odds ratio. This is
+    conditional on table margins, not on family covariates.
     """
-    Exact Conditional Maximum Likelihood Estimation of Odds Ratio and 95% Confidence Interval.
-    Solves noncentral hypergeometric distribution via Brent root finding.
-    
-    Contingency table:
-                Term+    Term-
-    Foreground    a        b     | n1 = a + b
-    Background    c        d     | n2 = c + d
-    ----------------------------
-    Total         m1       m2    | N = a + b + c + d
-    
-    Parameters
-    ----------
-    a, b, c, d : int
-        Cell counts in the 2x2 contingency table.
-    alpha : float, optional
-        Significance level for confidence interval (default: 0.05 for 95% CI).
-        
-    Returns
-    -------
-    tuple (float, float, float)
-        (point_estimate, ci_low, ci_high)
-    """
-    n1 = a + b
-    n2 = c + d
-    m1 = a + c
-    x = a
-    
-    x_min = max(0, m1 - n2)
-    x_max = min(n1, m1)
-    support = np.arange(x_min, x_max + 1)
-    
-    if len(support) == 1:
-        return 1.0, 0.0, float("inf")
-        
-    log_weights = np.array([log_comb(n1, k) + log_comb(n2, m1 - k) for k in support])
-    max_lw = np.max(log_weights)
-    weights = np.exp(log_weights - max_lw)
-    
-    # Boundary cases: degenerate tables
-    if x == x_min:
-        mle_or = 0.0
-    elif x == x_max:
-        mle_or = float("inf")
-    else:
-        def mean_diff(log_theta):
-            theta = np.exp(log_theta)
-            pw = weights * (theta ** (support - x_min))
-            p = pw / np.sum(pw)
-            return np.sum(support * p) - x
-            
-        try:
-            log_theta_mle = brentq(mean_diff, -20.0, 20.0)
-            mle_or = float(np.exp(log_theta_mle))
-        except Exception:
-            mle_or = float((a * d) / (b * c)) if (b * c) > 0 else float("inf")
-            
-    # Exact conditional confidence interval
-    def p_ge(theta):
-        pw = weights * (theta ** (support - x_min))
-        s = np.sum(pw)
-        if s == 0:
-            return 1.0
-        return np.sum(pw[support >= x]) / s
-        
-    def p_le(theta):
-        pw = weights * (theta ** (support - x_min))
-        s = np.sum(pw)
-        if s == 0:
-            return 1.0
-        return np.sum(pw[support <= x]) / s
-        
-    target_low = alpha / 2.0
-    target_high = 1.0 - alpha / 2.0
-    
-    # Lower bound
-    if x == x_min:
-        ci_low = 0.0
-    else:
-        try:
-            ci_low = float(brentq(lambda t: p_ge(t) - target_low, 1e-6, 1e4))
-        except Exception:
-            ci_low = 0.0
-            
-    # Upper bound
-    if x == x_max:
-        ci_high = float("inf")
-    else:
-        try:
-            ci_high = float(brentq(lambda t: p_le(t) - target_low, 1e-4, 1e6))
-        except Exception:
-            ci_high = float("inf")
-            
-    return mle_or, ci_low, ci_high
+    cells = (a, b, c, d)
+    if any(isinstance(v, bool) or not isinstance(v, (int, np.integer)) or v < 0 for v in cells):
+        raise ValueError("table counts must be nonnegative integers")
+    if not 0 < alpha < 1:
+        raise ValueError("alpha must be in (0, 1)")
+    from scipy.stats.contingency import odds_ratio
+
+    result = odds_ratio([[a, b], [c, d]], kind="conditional")
+    if np.isnan(result.statistic):
+        return float("nan"), float("nan"), float("nan")
+    interval = result.confidence_interval(confidence_level=1 - alpha)
+    return float(result.statistic), float(interval.low), float(interval.high)
 
 
 def fisher_exact_test(a, b, c, d, alternative="greater"):
