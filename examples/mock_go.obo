@@ -1,0 +1,25 @@
+format-version: 1.2
+data-version: releases/2026-test
+
+[Term]
+id: GO:0008150
+name: biological_process
+namespace: biological_process
+
+[Term]
+id: GO:0008152
+name: metabolic process
+namespace: biological_process
+is_a: GO:0008150 ! biological_process
+
+[Term]
+id: GO:0006950
+name: response to stress
+namespace: biological_process
+is_a: GO:0008150 ! biological_process
+
+[Term]
+id: GO:0009408
+name: response to heat
+namespace: biological_process
+is_a: GO:0006950 ! response to stress
